@@ -12,7 +12,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:name="com.Sct.gamebone.GameApp" >
         <activity
             android:name="com.Sct.gamebone.LoadingActivity"
             android:label="@string/app_name" >

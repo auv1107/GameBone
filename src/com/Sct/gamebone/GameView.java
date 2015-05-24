@@ -37,12 +37,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 	@Override
 	public void surfaceDestroyed(SurfaceHolder arg0) {
 		mGameThread.stop();
+		mGameEngine.exit();
 	}
 
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		mGameEngine.onDraw(canvas);
+		if (canvas != null)
+			mGameEngine.onDraw(canvas);
 	}
 
 	@Override

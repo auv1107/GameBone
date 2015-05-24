@@ -1,25 +1,68 @@
 package com.Sct.gamebone;
 
+import java.util.List;
+
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 
 public class GameEngine {
 	protected Context mContext = null;
 	protected int mGameState = 0;
 
+	protected GameData mGameData = null;
+	protected Paint mBodyPaint = null;
+	protected Paint mHeadPaint = null;
+	protected Paint mDoorPaint = null;
+	protected Paint mObstaclePaint = null;
+
 	public final static int GAME = 0;
 	public final static int WIN = 1;
 	public final static int LOSE = 2;
 
+	public final static int DELTA = 30;
+	public Thread mThread = null;
+	public long lastUpdateTime = 0;
+	public boolean mIsRunning = false;
+
+	private long lastMoveTime = 0;
+
 	public GameEngine(Context context) {
 		mContext = context;
+		mGameData = new GameData();
+		mBodyPaint = new Paint();
+		mBodyPaint.setColor(Color.YELLOW);
+		mHeadPaint = new Paint();
+		mHeadPaint.setColor(Color.GREEN);
+		mDoorPaint = new Paint();
+		mDoorPaint.setColor(Color.YELLOW);
+		mDoorPaint.setStyle(Paint.Style.FILL);
+		mObstaclePaint = new Paint();
+		mObstaclePaint.setColor(Color.MAGENTA);
+		mThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (mIsRunning) {
+					long time = System.currentTimeMillis();
+					if (time - lastUpdateTime >= DELTA) {
+						time = System.currentTimeMillis();
+						update((int) (time - lastUpdateTime));
+						lastUpdateTime = time;
+					}
+				}
+			}
+		});
 	}
 
 	public void initGame() {
-
+		mGameData.initData(0);
+		lastUpdateTime = System.currentTimeMillis();
+		lastMoveTime = System.currentTimeMillis();
+		mIsRunning = true;
+		mThread.start();
 	}
 
 	public void onDraw(Canvas canvas) {
@@ -47,14 +90,14 @@ public class GameEngine {
 
 	private void drawGame(Canvas canvas) {
 		// TODO Auto-generated method stub
-
+		drawObstacle(canvas);
+		drawDoor(canvas);
+		drawSnake(canvas);
 	}
 
 	private void drawBackground(Canvas canvas) {
 		// TODO Auto-generated method stub
-		canvas.drawBitmap(BitmapFactory.decodeResource(mContext.getResources(),
-				R.drawable.ic_launcher), new Rect(0, 0, 800, 800), new Rect(0,
-				0, 800, 800), new Paint());
+		canvas.drawColor(Color.BLACK);
 	}
 
 	public void onTouch(float x, float y) {
@@ -70,6 +113,72 @@ public class GameEngine {
 	}
 
 	public void onGameTouch(float x, float y) {
+		if (x < GameApp.getApplication().getScreenWidth() / 2) {
+			mGameData.Turn(GameData.LEFT);
+		} else {
+			mGameData.Turn(GameData.RIGHT);
+		}
+	}
 
+	private void drawHead(Canvas canvas, int headId) {
+		canvas.drawRect(mGameData.getRect(headId), mHeadPaint);
+	}
+
+	private void drawBody(Canvas canvas, int id) {
+		Rect r = mGameData.getRect(id);
+		int size = r.height();
+		int margin = size / 10;
+		canvas.drawRect(new Rect(r.left + margin, r.top + margin, r.right
+				- margin, r.bottom - margin), mBodyPaint);
+	}
+
+	private void drawSnake(Canvas canvas) {
+		List<Integer> snake = mGameData.snake;
+		if (snake.size() > 0) {
+			drawHead(canvas, snake.get(0));
+		}
+		for (int i = 1; i < snake.size(); i++) {
+			drawBody(canvas, snake.get(i));
+		}
+	}
+
+	private void drawDoor(Canvas canvas) {
+		if (mGameData.doorId != -1) {
+			Rect r = mGameData.getRect(mGameData.doorId);
+			int margin = r.height() / 10;
+			canvas.save();
+			canvas.rotate(mGameData.doorDirection * 90, r.centerX(),
+					r.centerY());
+			Path p = new Path();
+			p.moveTo(r.left - margin, r.top + margin * 3);
+			p.lineTo(r.left + margin + margin, r.bottom - margin * 3);
+			p.lineTo(r.right - margin - margin, r.bottom - margin * 3);
+			p.lineTo(r.right + margin, r.top + margin * 3);
+			p.close();
+			canvas.drawPath(p, mDoorPaint);
+			canvas.restore();
+		}
+	}
+
+	private void drawObstacle(Canvas canvas) {
+		for (int i = 0; i < mGameData.obstacle.size(); i++) {
+			int id = mGameData.obstacle.get(i);
+			Rect r = mGameData.getRect(id);
+			canvas.drawCircle(r.centerX(), r.centerY(), r.height() / 2,
+					mObstaclePaint);
+		}
+	}
+
+	public void update(int delta) {
+		long time = System.currentTimeMillis();
+		if (time - lastMoveTime >= mGameData.speed) {
+			mGameData.Move();
+			mGameData.checkIsReached();
+			lastMoveTime = time;
+		}
+	}
+
+	public void exit() {
+		mIsRunning = false;
 	}
 }

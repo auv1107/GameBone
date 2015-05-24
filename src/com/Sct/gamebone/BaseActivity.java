@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Process;
@@ -24,6 +25,8 @@ public class BaseActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setFullscreen();
+		GameApp.instance.setCurrentActivity(this);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}
 
 	public void AddMusic(String key, int res) {

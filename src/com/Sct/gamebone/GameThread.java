@@ -22,7 +22,11 @@ public class GameThread implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
-				mHolder.unlockCanvasAndPost(canvas);
+				try {
+					mHolder.unlockCanvasAndPost(canvas);
+				} catch (Exception e) {
+
+				}
 			}
 		}
 	}
