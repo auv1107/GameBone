@@ -12,13 +12,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 		OnTouchListener {
 	protected SurfaceHolder mHolder = null;
 	protected GameThread mGameThread = null;
-	protected GameEngine mGameEngine = null;
+	protected BaseGameEngine mGameEngine = null;
 
 	public GameView(Context context) {
 		super(context);
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 		mGameEngine = new GameEngine(context);
+		// mGameEngine = new MapEditor(context);
 		setOnTouchListener(this);
 		mGameEngine.initGame();
 	}

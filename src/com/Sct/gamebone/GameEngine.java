@@ -8,8 +8,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.os.Environment;
 
-public class GameEngine {
+public class GameEngine extends BaseGameEngine {
 	protected Context mContext = null;
 	protected int Mode = NORMAL;
 	protected int mGameState = GAME;
@@ -27,28 +28,7 @@ public class GameEngine {
 	public final static int WIN = 1;
 	public final static int LOSE = 2;
 
-	public final static int DELTA = 30;
-	public long lastUpdateTime = 0;
-	public boolean mIsRunning = false;
-
 	private long lastMoveTime = 0;
-
-	private Runnable mRunnable = new Runnable() {
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			while (mIsRunning) {
-				long time = System.currentTimeMillis();
-				if (time - lastUpdateTime >= DELTA) {
-					time = System.currentTimeMillis();
-					update((int) (time - lastUpdateTime));
-					lastUpdateTime = time;
-				}
-				Thread.yield();
-			}
-		}
-	};
 
 	public GameEngine(Context context) {
 		mContext = context;
@@ -64,15 +44,22 @@ public class GameEngine {
 		mObstaclePaint.setColor(Color.MAGENTA);
 	}
 
+	@Override
 	public void initGame() {
 		mGameState = GAME;
 		mGameData.initData(0);
 		lastUpdateTime = System.currentTimeMillis();
 		lastMoveTime = System.currentTimeMillis();
-		mIsRunning = true;
-		new Thread(mRunnable).start();
+
+		// GameData.writeToFile(Environment.getExternalStorageDirectory() +
+		// "/gamedatatest1.json", mGameData);
+		mGameData = GameData.readFromFile(Environment
+				.getExternalStorageDirectory() + "/test1.json");
+		mGameData.initSnake();
+		super.initGame();
 	}
 
+	@Override
 	public void onDraw(Canvas canvas) {
 		drawBackground(canvas);
 		drawGame(canvas);
@@ -122,6 +109,7 @@ public class GameEngine {
 		canvas.drawColor(Color.BLACK);
 	}
 
+	@Override
 	public void onTouch(float x, float y) {
 		switch (mGameState) {
 		case GAME:
@@ -192,7 +180,8 @@ public class GameEngine {
 		}
 	}
 
-	public void update(int delta) {
+	@Override
+	public void update(float delta) {
 		long time = System.currentTimeMillis();
 		if (time - lastMoveTime >= mGameData.speed) {
 			mGameData.Move();
@@ -203,10 +192,6 @@ public class GameEngine {
 			}
 			lastMoveTime = time;
 		}
-	}
-
-	public void exit() {
-		mIsRunning = false;
 	}
 
 	public void gameOver() {

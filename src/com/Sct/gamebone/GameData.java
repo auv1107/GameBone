@@ -1,8 +1,17 @@
 package com.Sct.gamebone;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.graphics.Rect;
 
@@ -14,7 +23,7 @@ public class GameData {
 
 	public int cols = 30;
 	public int rows = 15;
-	public int[] margin = new int[] { 50, 30, 20, 30 };
+	public int[] margin = new int[] { 50, 30, 20, 90 };
 	public List<Integer> snake = new ArrayList<Integer>();
 	public int size = -1;
 	public int direction = RIGHT;
@@ -28,15 +37,18 @@ public class GameData {
 	public void initData(int level) {
 		clearData();
 		updateSize();
-		for (int i = 10; i >= 0; i--) {
-			snake.add(i * cols);
-		}
 		int row = 5;
 		for (int i = 7; i < cols - 7; i++) {
 			obstacle.add((row - 1) * cols + i);
 			obstacle.add((rows - row - 1) * cols + i);
 		}
 		GenerateNewDoor();
+	}
+
+	public void initSnake() {
+		for (int i = 10; i >= 0; i--) {
+			snake.add(i * cols);
+		}
 	}
 
 	public void clearData() {
@@ -60,6 +72,8 @@ public class GameData {
 	}
 
 	public int getSize() {
+		if (size == -1)
+			updateSize();
 		return size;
 	}
 
@@ -206,5 +220,103 @@ public class GameData {
 			return true;
 		}
 		return false;
+	}
+
+	public int getIdByPosition(int x, int y) {
+		if (!getGameRect().contains(x, y))
+			return -1;
+		int left = x - margin[3];
+		int top = y - margin[0];
+		int row = top / getSize();
+		int col = left / getSize();
+		return row * cols + col;
+	}
+
+	public Rect getGameRect() {
+		return new Rect(margin[3], margin[0], margin[3] + getSize() * cols,
+				margin[0] + getSize() * rows);
+	}
+
+	public static GameData readFromFile(String path) {
+		// read from file
+		File file = new File(path);
+		BufferedReader br = null;
+		String jsonString = "";
+		try {
+			br = new BufferedReader(new FileReader(file));
+			String tmp = null;
+			while ((tmp = br.readLine()) != null) {
+				jsonString += tmp;
+			}
+			br.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// convert to gamedata
+		GameData data = new GameData();
+		JSONObject json;
+		try {
+			json = new JSONObject(jsonString);
+			data.cols = json.getInt("cols");
+			data.rows = json.getInt("rows");
+
+			JSONArray margin = json.getJSONArray("margin");
+			for (int i = 0; i < margin.length(); i++)
+				data.margin[i] = margin.getInt(i);
+
+			data.size = json.getInt("size");
+
+			JSONArray obstacle = json.getJSONArray("obstacle");
+			for (int i = 0; i < obstacle.length(); i++)
+				data.obstacle.add(obstacle.getInt(i));
+
+			data.direction = json.getInt("direction");
+			data.speed = json.getInt("speed");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return data;
+	}
+
+	public static boolean writeToFile(String path, GameData data) {
+		JSONObject json = new JSONObject();
+		FileWriter fw = null;
+		try {
+			json.put("cols", data.cols);
+			json.put("rows", data.rows);
+
+			JSONArray margin = new JSONArray();
+			for (int i = 0; i < data.margin.length; i++)
+				margin.put(data.margin[i]);
+			json.put("margin", margin);
+
+			json.put("size", data.size);
+
+			JSONArray obstacle = new JSONArray();
+			for (int i = 0; i < data.obstacle.size(); i++)
+				obstacle.put(data.obstacle.get(i));
+			json.put("obstacle", obstacle);
+
+			json.put("direction", data.direction);
+			json.put("speed", data.speed);
+
+			try {
+				fw = new FileWriter(path);
+				fw.write(json.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				fw.flush();
+				fw.close();
+			}
+		} catch (JSONException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+
+		}
+		return true;
 	}
 }
