@@ -17,7 +17,7 @@ public class GameData {
 	public int[] margin = new int[] { 50, 30, 20, 30 };
 	public List<Integer> snake = new ArrayList<Integer>();
 	public int size = -1;
-	public int direction = LEFT;
+	public int direction = RIGHT;
 	public int speed = 100;
 
 	public int doorId = -1;
@@ -26,6 +26,7 @@ public class GameData {
 	public List<Integer> obstacle = new ArrayList<Integer>();
 
 	public void initData(int level) {
+		clearData();
 		updateSize();
 		for (int i = 10; i >= 0; i--) {
 			snake.add(i * cols);
@@ -36,6 +37,15 @@ public class GameData {
 			obstacle.add((rows - row - 1) * cols + i);
 		}
 		GenerateNewDoor();
+	}
+
+	public void clearData() {
+		snake.clear();
+		obstacle.clear();
+		doorDirection = -1;
+		doorId = -1;
+		direction = RIGHT;
+		speed = 100;
 	}
 
 	public Rect getRect(int id) {
@@ -69,11 +79,7 @@ public class GameData {
 			return;
 		MoveBody();
 		int headId = snake.get(0);
-		if ((headId + 1) % cols == 0) {
-			snake.set(0, headId + 1 - cols);
-		} else {
-			snake.set(0, headId + 1);
-		}
+		snake.set(0, getNeighborId(headId, RIGHT));
 	}
 
 	public void MoveLeft() {
@@ -81,12 +87,7 @@ public class GameData {
 			return;
 		MoveBody();
 		int headId = snake.get(0);
-		if (headId % cols == 0) {
-			snake.set(0, headId + cols - 1);
-		} else {
-			snake.set(0, headId - 1);
-		}
-
+		snake.set(0, getNeighborId(headId, LEFT));
 	}
 
 	public void MoveDown() {
@@ -94,11 +95,7 @@ public class GameData {
 			return;
 		MoveBody();
 		int headId = snake.get(0);
-		if (headId / cols == rows - 1) {
-			snake.set(0, headId % cols);
-		} else {
-			snake.set(0, headId + cols);
-		}
+		snake.set(0, getNeighborId(headId, DOWN));
 	}
 
 	public void MoveUp() {
@@ -106,11 +103,7 @@ public class GameData {
 			return;
 		MoveBody();
 		int headId = snake.get(0);
-		if (headId / cols == 0) {
-			snake.set(0, cols * (rows - 1) + headId);
-		} else {
-			snake.set(0, headId - cols);
-		}
+		snake.set(0, getNeighborId(headId, UP));
 	}
 
 	public void MoveBody() {
@@ -154,17 +147,63 @@ public class GameData {
 		}
 		doorId = n;
 		doorDirection = r.nextInt(4);
+		int neighborId = getNeighborId(doorId, doorDirection);
+		while (obstacle.contains(neighborId)) {
+			doorDirection = r.nextInt(4);
+			neighborId = getNeighborId(doorId, doorDirection);
+		}
 	}
 
-	public boolean checkIsReached() {
+	public int getNeighborId(int id, int d) {
+		switch (d) {
+		case LEFT:
+			if (id % cols == 0) {
+				id = id + cols - 1;
+			} else {
+				id = id - 1;
+			}
+			break;
+		case RIGHT:
+			if ((id + 1) % cols == 0) {
+				id = id + 1 - cols;
+			} else {
+				id = id + 1;
+			}
+			break;
+		case UP:
+			if (id / cols == 0) {
+				id = cols * (rows - 1) + id;
+			} else {
+				id = id - cols;
+			}
+			break;
+		case DOWN:
+			if (id / cols == rows - 1) {
+				id = id % cols;
+			} else {
+				id = id + cols;
+			}
+			break;
+		}
+		return id;
+	}
+
+	public boolean checkIfReached() {
 		if (snake.get(0) == doorId) {
 			if ((direction == UP && doorDirection == DOWN)
 					|| (direction == DOWN && doorDirection == UP)
 					|| (direction == LEFT && doorDirection == RIGHT)
 					|| (direction == RIGHT && doorDirection == LEFT)) {
-				GenerateNewDoor();
 				return true;
 			}
+		}
+		return false;
+	}
+
+	public boolean checkIfCollided() {
+		if (obstacle.contains(snake.get(0))
+				|| snake.subList(1, snake.size()).contains(snake.get(0))) {
+			return true;
 		}
 		return false;
 	}

@@ -11,7 +11,11 @@ import android.graphics.Rect;
 
 public class GameEngine {
 	protected Context mContext = null;
-	protected int mGameState = 0;
+	protected int Mode = NORMAL;
+	protected int mGameState = GAME;
+
+	public final static int NORMAL = 0;
+	public final static int MAP_EDIT = 1;
 
 	protected GameData mGameData = null;
 	protected Paint mBodyPaint = null;
@@ -24,11 +28,27 @@ public class GameEngine {
 	public final static int LOSE = 2;
 
 	public final static int DELTA = 30;
-	public Thread mThread = null;
 	public long lastUpdateTime = 0;
 	public boolean mIsRunning = false;
 
 	private long lastMoveTime = 0;
+
+	private Runnable mRunnable = new Runnable() {
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			while (mIsRunning) {
+				long time = System.currentTimeMillis();
+				if (time - lastUpdateTime >= DELTA) {
+					time = System.currentTimeMillis();
+					update((int) (time - lastUpdateTime));
+					lastUpdateTime = time;
+				}
+				Thread.yield();
+			}
+		}
+	};
 
 	public GameEngine(Context context) {
 		mContext = context;
@@ -42,27 +62,15 @@ public class GameEngine {
 		mDoorPaint.setStyle(Paint.Style.FILL);
 		mObstaclePaint = new Paint();
 		mObstaclePaint.setColor(Color.MAGENTA);
-		mThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (mIsRunning) {
-					long time = System.currentTimeMillis();
-					if (time - lastUpdateTime >= DELTA) {
-						time = System.currentTimeMillis();
-						update((int) (time - lastUpdateTime));
-						lastUpdateTime = time;
-					}
-				}
-			}
-		});
 	}
 
 	public void initGame() {
+		mGameState = GAME;
 		mGameData.initData(0);
 		lastUpdateTime = System.currentTimeMillis();
 		lastMoveTime = System.currentTimeMillis();
 		mIsRunning = true;
-		mThread.start();
+		new Thread(mRunnable).start();
 	}
 
 	public void onDraw(Canvas canvas) {
@@ -85,7 +93,21 @@ public class GameEngine {
 
 	private void drawState(Canvas canvas) {
 		// TODO Auto-generated method stub
-
+		Paint p = new Paint();
+		p.setColor(Color.WHITE);
+		p.setTextSize(40);
+		switch (mGameState) {
+		case GAME:
+			break;
+		case WIN:
+			break;
+		case LOSE:
+			canvas.drawColor(Color.argb(100, 0xff, 0xff, 0xff));
+			canvas.drawText("Lose",
+					GameApp.getApplication().getScreenWidth() / 2, GameApp
+							.getApplication().getScreenHeight() / 2, p);
+			break;
+		}
 	}
 
 	private void drawGame(Canvas canvas) {
@@ -108,6 +130,7 @@ public class GameEngine {
 		case WIN:
 			break;
 		case LOSE:
+			initGame();
 			break;
 		}
 	}
@@ -173,12 +196,21 @@ public class GameEngine {
 		long time = System.currentTimeMillis();
 		if (time - lastMoveTime >= mGameData.speed) {
 			mGameData.Move();
-			mGameData.checkIsReached();
+			if (mGameData.checkIfReached())
+				mGameData.GenerateNewDoor();
+			if (mGameData.checkIfCollided()) {
+				gameOver();
+			}
 			lastMoveTime = time;
 		}
 	}
 
 	public void exit() {
 		mIsRunning = false;
+	}
+
+	public void gameOver() {
+		mIsRunning = false;
+		mGameState = LOSE;
 	}
 }
