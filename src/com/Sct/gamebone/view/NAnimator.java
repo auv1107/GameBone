@@ -1,17 +1,14 @@
-package views;
+package com.Sct.gamebone.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.Sct.gamebone.TileCache;
 
 public class NAnimator {
 
-	private Bitmap mImage = null;
 	private int delta = 50;
 	private long lastStateTime = 0;
 	private int state = 0;

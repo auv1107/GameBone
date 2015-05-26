@@ -1,4 +1,4 @@
-package com.Sct.gamebone;
+package com.Sct.gamebone.fragment;
 
 import java.util.List;
 
@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.os.Environment;
 
 public class GameEngine extends BaseGameEngine {
 	protected Context mContext = null;

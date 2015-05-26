@@ -1,4 +1,4 @@
-package com.Sct.gamebone;
+package com.Sct.gamebone.activity;
 
 import android.content.Intent;
 import android.os.Bundle;

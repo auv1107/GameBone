@@ -1,5 +1,8 @@
 package com.Sct.gamebone;
 
+import com.Sct.gamebone.fragment.BaseGameEngine;
+import com.Sct.gamebone.fragment.GameData;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

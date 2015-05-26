@@ -1,4 +1,4 @@
-package com.Sct.gamebone;
+package com.Sct.gamebone.fragment;
 
 import android.content.Context;
 import android.graphics.Canvas;

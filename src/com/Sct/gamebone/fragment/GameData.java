@@ -1,4 +1,4 @@
-package com.Sct.gamebone;
+package com.Sct.gamebone.fragment;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,7 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.R.integer;
 import android.graphics.Rect;
 
 public class GameData {

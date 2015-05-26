@@ -1,8 +1,6 @@
-package com.Sct.gamebone;
+package com.Sct.gamebone.fragment;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,6 +13,8 @@ import org.json.JSONObject;
 
 import android.content.res.AssetManager;
 import android.graphics.Rect;
+
+import com.Sct.gamebone.TileCache;
 
 public class NGameData {
 	public static String MAP1 = "maps/map1.tmx";

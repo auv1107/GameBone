@@ -1,17 +1,18 @@
-package com.Sct.gamebone;
+package com.Sct.gamebone.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import views.Mirror;
-import views.NAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import com.Sct.gamebone.NGameData.TileObject;
-import com.Sct.gamebone.NGameData.Tileset;
+import com.Sct.gamebone.TileCache;
+import com.Sct.gamebone.fragment.NGameData.TileObject;
+import com.Sct.gamebone.fragment.NGameData.Tileset;
+import com.Sct.gamebone.view.Mirror;
+import com.Sct.gamebone.view.NAnimator;
 
 public class NGameEngine extends BaseGameEngine {
 	private NGameData mNGameData = null;

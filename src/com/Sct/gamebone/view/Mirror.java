@@ -1,4 +1,4 @@
-package views;
+package com.Sct.gamebone.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -26,8 +26,15 @@ public class Mirror extends NAnimator {
 		MaskFilter mf = new EmbossMaskFilter(new float[] { 1, 1, 1 }, 0.4f, 6,
 				3.5f);
 		p.setMaskFilter(mf);
+
 		mBluePaint = new Paint(p);
 		mBluePaint.setColor(Color.BLUE);
+		mRedPaint = new Paint(p);
+		mRedPaint.setColor(Color.RED);
+		mYellowPaint = new Paint(p);
+		mYellowPaint.setColor(Color.YELLOW);
+		mGreenPaint = new Paint(p);
+		mGreenPaint.setColor(Color.GREEN);
 	}
 
 	@Override

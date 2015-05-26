@@ -1,4 +1,4 @@
-package com.Sct.gamebone;
+package com.Sct.gamebone.activity;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,6 +15,9 @@ import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.Sct.gamebone.R;
+import com.Sct.gamebone.fragment.GameApp;
 
 public class BaseActivity extends Activity {
 	protected static boolean mIsMute = false;
@@ -74,13 +77,13 @@ public class BaseActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 	}
 
-	protected int getScreenWidth() {
+	public int getScreenWidth() {
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		return dm.widthPixels;
 	}
 
-	protected int getScreenHeight() {
+	public int getScreenHeight() {
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		return dm.heightPixels;

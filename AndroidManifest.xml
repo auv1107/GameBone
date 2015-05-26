@@ -14,13 +14,13 @@
     </uses-permission>
 
     <application
-        android:name="com.Sct.gamebone.GameApp"
+        android:name="com.Sct.gamebone.fragment.GameApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.Sct.gamebone.LoadingActivity"
+            android:name="com.Sct.gamebone.activity.LoadingActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,19 +29,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.Sct.gamebone.MenuActivity"
+            android:name="com.Sct.gamebone.activity.MenuActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.Sct.gamebone.GameActivity"
+            android:name="com.Sct.gamebone.activity.GameActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.Sct.gamebone.HelpActivity"
+            android:name="com.Sct.gamebone.activity.HelpActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.Sct.gamebone.SetupActivity"
+            android:name="com.Sct.gamebone.activity.SetupActivity"
             android:label="@string/app_name" >
         </activity>
     </application>

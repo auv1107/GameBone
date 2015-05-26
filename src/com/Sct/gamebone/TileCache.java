@@ -14,7 +14,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
-import com.Sct.gamebone.NGameData.Tileset;
+import com.Sct.gamebone.fragment.GameApp;
+import com.Sct.gamebone.fragment.NGameData.Tileset;
 
 public class TileCache {
 	private static HashMap<String, Bitmap> bitmap = new HashMap<String, Bitmap>();
@@ -44,7 +45,6 @@ public class TileCache {
 		Log.d("tilecache", "has alpha: " + b.hasAlpha());
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				int p = b.getPixel(i, j);
 				if (b.getPixel(i, j) == c) {
 					b.setPixel(i, j, Color.TRANSPARENT);
 				}
