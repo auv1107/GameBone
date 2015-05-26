@@ -53,8 +53,8 @@ public class GameEngine extends BaseGameEngine {
 
 		// GameData.writeToFile(Environment.getExternalStorageDirectory() +
 		// "/gamedatatest1.json", mGameData);
-		mGameData = GameData.readFromFile(Environment
-				.getExternalStorageDirectory() + "/test1.json");
+		// mGameData = GameData.readFromFile(Environment
+		// .getExternalStorageDirectory() + "/test1.json");
 		mGameData.initSnake();
 		super.initGame();
 	}
@@ -102,6 +102,7 @@ public class GameEngine extends BaseGameEngine {
 		drawObstacle(canvas);
 		drawDoor(canvas);
 		drawSnake(canvas);
+		drawGrass(canvas);
 	}
 
 	private void drawBackground(Canvas canvas) {
@@ -177,6 +178,16 @@ public class GameEngine extends BaseGameEngine {
 			Rect r = mGameData.getRect(id);
 			canvas.drawCircle(r.centerX(), r.centerY(), r.height() / 2,
 					mObstaclePaint);
+		}
+	}
+
+	private void drawGrass(Canvas canvas) {
+		for (int i = 0; i < mGameData.grass.size(); i++) {
+			int id = mGameData.grass.get(i);
+			Rect r = mGameData.getRect(id);
+			Paint p = new Paint();
+			p.setColor(Color.argb(0x50, 0x00, 0xcc, 0x00));
+			canvas.drawCircle(r.centerX(), r.centerY(), r.height() / 2, p);
 		}
 	}
 

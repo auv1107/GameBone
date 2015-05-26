@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R.integer;
 import android.graphics.Rect;
 
 public class GameData {
@@ -33,6 +34,7 @@ public class GameData {
 	public int doorDirection = -1;
 
 	public List<Integer> obstacle = new ArrayList<Integer>();
+	public List<Integer> grass = new ArrayList<Integer>();
 
 	public void initData(int level) {
 		clearData();
@@ -41,6 +43,10 @@ public class GameData {
 		for (int i = 7; i < cols - 7; i++) {
 			obstacle.add((row - 1) * cols + i);
 			obstacle.add((rows - row - 1) * cols + i);
+		}
+		for (int i = 7; i < cols - 7; i++) {
+			grass.add((row) * cols + i);
+			grass.add((rows - row - 1 - 1) * cols + i);
 		}
 		GenerateNewDoor();
 	}

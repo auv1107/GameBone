@@ -18,7 +18,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 		super(context);
 		mHolder = getHolder();
 		mHolder.addCallback(this);
-		mGameEngine = new GameEngine(context);
+		mGameEngine = new NGameEngine(context);
 		// mGameEngine = new MapEditor(context);
 		setOnTouchListener(this);
 		mGameEngine.initGame();
