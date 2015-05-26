@@ -7,8 +7,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 
+import com.Sct.gamebone.CollisionManager;
 import com.Sct.gamebone.TileCache;
+import com.Sct.gamebone.TouchDispatchCenter;
 import com.Sct.gamebone.fragment.NGameData.TileObject;
 import com.Sct.gamebone.fragment.NGameData.Tileset;
 import com.Sct.gamebone.view.Mirror;
@@ -138,12 +141,15 @@ public class NGameEngine extends BaseGameEngine {
 	}
 
 	@Override
-	public void onTouch(float x, float y) {
+	public void onTouch(MotionEvent e) {
 		// TODO Auto-generated method stub
-		super.onTouch(x, y);
+		super.onTouch(e);
 		if (state == PAUSE) {
 			state = GAME;
 			resumeAllChild();
+		}
+		if (TouchDispatchCenter.getInstance().getTouchEnabled()) {
+			TouchDispatchCenter.getInstance().onTouch(e);
 		}
 	}
 
@@ -151,6 +157,7 @@ public class NGameEngine extends BaseGameEngine {
 	public void update(float delta) {
 		// TODO Auto-generated method stub
 		super.update(delta);
+		CollisionManager.getInstance().checkIfCollised();
 	}
 
 	@Override

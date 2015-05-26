@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 
 public class GameEngine extends BaseGameEngine {
 	protected Context mContext = null;
@@ -110,7 +111,9 @@ public class GameEngine extends BaseGameEngine {
 	}
 
 	@Override
-	public void onTouch(float x, float y) {
+	public void onTouch(MotionEvent e) {
+		float x = e.getX();
+		float y = e.getY();
 		switch (mGameState) {
 		case GAME:
 			onGameTouch(x, y);

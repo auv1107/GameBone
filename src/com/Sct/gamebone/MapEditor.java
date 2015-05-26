@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Environment;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 public class MapEditor extends BaseGameEngine {
@@ -46,9 +47,11 @@ public class MapEditor extends BaseGameEngine {
 	}
 
 	@Override
-	public void onTouch(float x, float y) {
+	public void onTouch(MotionEvent e) {
 		// TODO Auto-generated method stub
-		super.onTouch(x, y);
+		super.onTouch(e);
+		float x = e.getX();
+		float y = e.getY();
 		if (optionRect[0].contains((int) x, (int) y)) {
 			selected = 0;
 		}

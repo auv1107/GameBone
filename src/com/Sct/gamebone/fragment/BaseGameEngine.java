@@ -1,6 +1,7 @@
 package com.Sct.gamebone.fragment;
 
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 
 public abstract class BaseGameEngine {
 	protected Boolean mIsRunning = false;
@@ -31,7 +32,7 @@ public abstract class BaseGameEngine {
 	public void onDraw(Canvas canvas) {
 	}
 
-	public void onTouch(float x, float y) {
+	public void onTouch(MotionEvent e) {
 	}
 
 	public void update(float delta) {
