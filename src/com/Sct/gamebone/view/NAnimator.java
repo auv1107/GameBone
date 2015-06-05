@@ -4,10 +4,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 
+import com.Sct.gamebone.Collision;
 import com.Sct.gamebone.TileCache;
+import com.Sct.gamebone.Touchable;
 
-public class NAnimator {
+public class NAnimator implements Collision, Touchable{
 
 	private int delta = 50;
 	private long lastStateTime = 0;
@@ -23,6 +26,13 @@ public class NAnimator {
 	protected int speed = 0;
 	protected int degree = 0;
 	protected boolean running = false;
+	
+	private boolean isSwallow = false;
+	private boolean isTouchable = false;
+	private boolean isStatic = true;
+	private boolean isCollisionEnabled = false;
+	private Rect touchArea = null;
+	private Rect collisionArea = null;
 
 	public NAnimator(Context context, int[] stateIds, int x, int y, int width,
 			int height) {
@@ -99,5 +109,66 @@ public class NAnimator {
 	public NAnimator setDegree(int degree) {
 		this.degree = degree;
 		return this;
+	}
+
+	@Override
+	public Rect getTouchArea() {
+		// TODO Auto-generated method stub
+		return touchArea;
+	}
+
+	@Override
+	public void onTouch(MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isTouchEnabaled() {
+		// TODO Auto-generated method stub
+		return isTouchable;
+	}
+
+	@Override
+	public boolean isSwallow() {
+		// TODO Auto-generated method stub
+		return isSwallow;
+	}
+
+	@Override
+	public Rect getCollisionArea() {
+		// TODO Auto-generated method stub
+		return collisionArea;
+	}
+
+	@Override
+	public void onCollision(Collision c) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isCollisionEnabled() {
+		// TODO Auto-generated method stub
+		return isCollisionEnabled;
+	}
+
+	@Override
+	public boolean isStatic() {
+		// TODO Auto-generated method stub
+		return isStatic;
+	}
+
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public void setTouchArea(Rect r) {
+		touchArea = r;
+	}
+	public void setCollisionArea(Rect r) {
+		collisionArea = r;
 	}
 }

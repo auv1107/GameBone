@@ -29,7 +29,7 @@ public class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setFullscreen();
 		GameApp.instance.setCurrentActivity(this);
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
 	public void AddMusic(String key, int res) {

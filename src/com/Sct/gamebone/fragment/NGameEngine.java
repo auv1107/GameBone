@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
+import com.Sct.gamebone.BitmapCache;
 import com.Sct.gamebone.CollisionManager;
+import com.Sct.gamebone.R;
 import com.Sct.gamebone.TileCache;
 import com.Sct.gamebone.TouchDispatchCenter;
 import com.Sct.gamebone.fragment.NGameData.TileObject;
@@ -28,7 +32,7 @@ public class NGameEngine extends BaseGameEngine {
 	private float screenscale_x = 0f;
 	private float screenscale_y = 0f;
 
-	private int[] margin = new int[] { 0, 0, 0, 0 };
+	private int[] margin = new int[] { 0, 0, 0, 128 };
 	private NAnimator mShooter = null;
 	private List<NAnimator> mReceiver = new ArrayList<NAnimator>();
 
@@ -44,6 +48,7 @@ public class NGameEngine extends BaseGameEngine {
 		mContext = context;
 		Tileset ts = new Tileset(960, 960, "light", 192, 192, "#000000");
 		TileCache.AddTileset(ts);
+		BitmapCache.put("ui1", R.drawable.ui1);
 	}
 
 	public Context getContext() {
@@ -70,8 +75,8 @@ public class NGameEngine extends BaseGameEngine {
 		tilewidth = (screenwidth - margin[1] - margin[3]) / width;
 		tileheight = (screenheight - margin[0] - margin[2]) / height;
 
-		screenscale_x = tilewidth / mNGameData.getTileWidth();
-		screenscale_y = tileheight / mNGameData.getTileHeight();
+		screenscale_x = tilewidth * 1.0f / mNGameData.getTileWidth();
+		screenscale_y = tileheight * 1.0f / mNGameData.getTileHeight();
 	}
 
 	public void addEnergy() {
@@ -103,12 +108,27 @@ public class NGameEngine extends BaseGameEngine {
 	@Override
 	public void onDraw(Canvas canvas) {
 		// TODO Auto-generated method stub
+		canvas.save();
+		canvas.clipRect(margin[3], margin[0], GameApp.getApplication()
+				.getScreenWidth() - margin[1], GameApp.getApplication()
+				.getScreenHeight() - margin[2]);
+		canvas.translate(margin[3], margin[0]);
 		super.onDraw(canvas);
 		drawMap(canvas);
 		drawObjects(canvas);
 		drawEnergy(canvas);
 
 		m.onDraw(canvas);
+
+		canvas.restore();
+		drawToolbar(canvas);
+	}
+	
+	private void drawToolbar(Canvas canvas) {
+		Bitmap b = BitmapCache.get("ui1");
+		Paint p = new Paint();
+		p.setShadowLayer(10, 8, 8, Color.DKGRAY);
+		canvas.drawBitmap(b, new Rect(0,0,64,160), new Rect(0,0,margin[3],GameApp.getApplication().getScreenHeight()), p);
 	}
 
 	private void drawEnergy(Canvas canvas) {
