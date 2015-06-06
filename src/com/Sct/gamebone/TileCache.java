@@ -14,8 +14,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
-import com.Sct.gamebone.fragment.GameApp;
-import com.Sct.gamebone.fragment.NGameData.Tileset;
+import com.Sct.gamebone.framwork.GameApp;
+import com.Sct.gamebone.framwork.NGameData.Tileset;
 
 public class TileCache {
 	private static HashMap<String, Bitmap> bitmap = new HashMap<String, Bitmap>();

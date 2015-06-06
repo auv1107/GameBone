@@ -2,7 +2,7 @@ package com.Sct.gamebone;
 
 import java.util.HashMap;
 
-import com.Sct.gamebone.fragment.GameApp;
+import com.Sct.gamebone.framwork.GameApp;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

@@ -1,4 +1,4 @@
-package com.Sct.gamebone.fragment;
+package com.Sct.gamebone.framwork;
 
 import com.Sct.gamebone.activity.BaseActivity;
 

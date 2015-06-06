@@ -17,7 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.Sct.gamebone.R;
-import com.Sct.gamebone.fragment.GameApp;
+import com.Sct.gamebone.framwork.GameApp;
 
 public class BaseActivity extends Activity {
 	protected static boolean mIsMute = false;

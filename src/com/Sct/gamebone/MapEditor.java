@@ -1,7 +1,7 @@
 package com.Sct.gamebone;
 
-import com.Sct.gamebone.fragment.BaseGameEngine;
-import com.Sct.gamebone.fragment.GameData;
+import com.Sct.gamebone.framwork.BaseGameEngine;
+import com.Sct.gamebone.framwork.GameData;
 
 import android.content.Context;
 import android.graphics.Canvas;

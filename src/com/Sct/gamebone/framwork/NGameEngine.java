@@ -1,4 +1,4 @@
-package com.Sct.gamebone.fragment;
+package com.Sct.gamebone.framwork;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ import com.Sct.gamebone.CollisionManager;
 import com.Sct.gamebone.R;
 import com.Sct.gamebone.TileCache;
 import com.Sct.gamebone.TouchDispatchCenter;
-import com.Sct.gamebone.fragment.NGameData.TileObject;
-import com.Sct.gamebone.fragment.NGameData.Tileset;
+import com.Sct.gamebone.framwork.NGameData.TileObject;
+import com.Sct.gamebone.framwork.NGameData.Tileset;
 import com.Sct.gamebone.view.Mirror;
 import com.Sct.gamebone.view.NAnimator;
 

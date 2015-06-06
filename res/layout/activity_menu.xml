@@ -11,15 +11,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="17dp"
         android:layout_marginBottom="30dp"
+        android:layout_marginTop="17dp"
         android:src="@drawable/label_stage_choose" />
 
     <ListView
         android:id="@+id/stage_list"
-        android:background="@drawable/menu_background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="452dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/menu_content_bg"
+        android:divider="#00000000"
+        android:dividerHeight="14dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="15dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:scrollbars="none" >
     </ListView>
 
     <LinearLayout
@@ -31,16 +40,15 @@
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/back_btn"
-            android:layout_marginLeft="60dp" />
+            android:layout_marginLeft="60dp"
+            android:src="@drawable/back_btn" />
 
         <ImageView
             android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/help_btn"
-            android:layout_marginLeft="100dp" />
-
+            android:layout_marginLeft="100dp"
+            android:src="@drawable/help_btn" />
     </LinearLayout>
 
 </LinearLayout>

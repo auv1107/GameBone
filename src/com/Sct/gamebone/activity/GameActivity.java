@@ -1,6 +1,6 @@
 package com.Sct.gamebone.activity;
 
-import com.Sct.gamebone.fragment.GameView;
+import com.Sct.gamebone.framwork.GameView;
 
 import android.os.Bundle;
 

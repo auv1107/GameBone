@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 
 import com.Sct.gamebone.R;
 
@@ -34,6 +35,11 @@ public class StageView extends View{
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
+	@Override  
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {  
+        setMeasuredDimension(600,400);  
+    }
+	
 	
 	public void setState(int state) {
 		this.state = state;
