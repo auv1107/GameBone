@@ -1,4 +1,4 @@
-package com.Sct.gamebone.framwork;
+package com.Sct.gamebone.framework;
 
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;

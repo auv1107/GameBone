@@ -1,4 +1,4 @@
-package com.Sct.gamebone.framwork;
+package com.Sct.gamebone.framework;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import android.content.res.AssetManager;
 import android.graphics.Rect;
 
-import com.Sct.gamebone.TileCache;
+import com.Sct.gamebone.library.TileCache;
 
 public class NGameData {
 	public static String MAP1 = "maps/map1.tmx";

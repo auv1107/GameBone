@@ -1,4 +1,4 @@
-package com.Sct.gamebone.framwork;
+package com.Sct.gamebone.framework;
 
 import java.util.List;
 
@@ -48,7 +48,6 @@ public class GameEngine extends BaseGameEngine {
 	public void initGame() {
 		mGameState = GAME;
 		mGameData.initData(0);
-		lastUpdateTime = System.currentTimeMillis();
 		lastMoveTime = System.currentTimeMillis();
 
 		// GameData.writeToFile(Environment.getExternalStorageDirectory() +
@@ -208,7 +207,7 @@ public class GameEngine extends BaseGameEngine {
 	}
 
 	public void gameOver() {
-		mIsRunning = false;
+		super.exit();
 		mGameState = LOSE;
 	}
 }

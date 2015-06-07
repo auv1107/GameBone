@@ -1,4 +1,4 @@
-package com.Sct.gamebone.framwork;
+package com.Sct.gamebone.framework;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +11,13 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-import com.Sct.gamebone.BitmapCache;
-import com.Sct.gamebone.CollisionManager;
 import com.Sct.gamebone.R;
-import com.Sct.gamebone.TileCache;
-import com.Sct.gamebone.TouchDispatchCenter;
-import com.Sct.gamebone.framwork.NGameData.TileObject;
-import com.Sct.gamebone.framwork.NGameData.Tileset;
+import com.Sct.gamebone.framework.NGameData.TileObject;
+import com.Sct.gamebone.framework.NGameData.Tileset;
+import com.Sct.gamebone.library.BitmapCache;
+import com.Sct.gamebone.library.CollisionManager;
+import com.Sct.gamebone.library.TileCache;
+import com.Sct.gamebone.library.TouchDispatchCenter;
 import com.Sct.gamebone.view.Mirror;
 import com.Sct.gamebone.view.NAnimator;
 
@@ -123,12 +123,13 @@ public class NGameEngine extends BaseGameEngine {
 		canvas.restore();
 		drawToolbar(canvas);
 	}
-	
+
 	private void drawToolbar(Canvas canvas) {
 		Bitmap b = BitmapCache.get("ui1");
 		Paint p = new Paint();
 		p.setShadowLayer(10, 8, 8, Color.DKGRAY);
-		canvas.drawBitmap(b, new Rect(0,0,64,160), new Rect(0,0,margin[3],GameApp.getApplication().getScreenHeight()), p);
+		canvas.drawBitmap(b, new Rect(0, 0, 64, 160), new Rect(0, 0, margin[3],
+				GameApp.getApplication().getScreenHeight()), p);
 	}
 
 	private void drawEnergy(Canvas canvas) {

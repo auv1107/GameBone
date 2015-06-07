@@ -1,4 +1,4 @@
-package com.Sct.gamebone.framwork;
+package com.Sct.gamebone.framework;
 
 import java.io.BufferedReader;
 import java.io.File;

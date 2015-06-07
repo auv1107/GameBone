@@ -1,6 +1,5 @@
 package com.Sct.gamebone.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -14,30 +13,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.Sct.gamebone.R;
-import com.Sct.gamebone.view.StageView;
+import com.Sct.gamebone.StageData;
+import com.Sct.gamebone.StageData.StageInfo;
 
 public class MenuActivity extends BaseActivity implements OnClickListener {
-	private List<StageInfo> mStageList = new ArrayList<StageInfo>();
-	private int[] mStageWordList = new int[] { R.drawable.stage1,
-			R.drawable.stage2, R.drawable.stage3 };
+	private List<StageInfo> mStageList = null;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// setContentView
 		setContentView(R.layout.activity_menu);
-
-		mStageList.add(new StageInfo(0, 1, 0));
-		mStageList.add(new StageInfo(1, 0, 3));
-		mStageList.add(new StageInfo(2, 2, 1));
-		mStageList.add(new StageInfo(0, 1, 0));
-		mStageList.add(new StageInfo(1, 0, 3));
-		mStageList.add(new StageInfo(2, 2, 1));
-		mStageList.add(new StageInfo(0, 1, 0));
-		mStageList.add(new StageInfo(1, 0, 3));
-		mStageList.add(new StageInfo(2, 2, 1));
-		// mStageList.add(new StageInfo(4, 2, 2));
+		mStageList = StageData.getInstance().getStageList();
 
 		ListView lv = (ListView) findViewById(R.id.stage_list);
 		lv.setAdapter(new MenuAdapter(this));
@@ -102,7 +91,7 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.stage_item, null);
 				holder = new ViewHolder();
-				holder.menu_stage = (ImageView) convertView
+				holder.menu_stage = (TextView) convertView
 						.findViewById(R.id.menu_stage);
 				holder.menu_state = (LinearLayout) convertView
 						.findViewById(R.id.menu_state);
@@ -114,30 +103,33 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			convertView
 					.setBackground(getResources()
 							.getDrawable(
-									info.state == StageView.PASSED ? StageView.PASSED_BACKGROUND_DRAWABLE
-											: StageView.LOCKED_BACKGROUND_DRAWABLE));
-			holder.menu_stage.setImageResource(mStageWordList[info.level]);
+									info.state == StageData.PASSED ? StageData.PASSED_BACKGROUND_DRAWABLE
+											: StageData.LOCKED_BACKGROUND_DRAWABLE));
+			holder.menu_stage.setText(info.name);
 
 			holder.menu_state.removeAllViews();
 			ImageView v = null;
 			switch (info.state) {
-			case StageView.PASSED:
+			case StageData.PASSED:
 				for (int i = 0; i < info.star; i++) {
 					v = new ImageView(MenuActivity.this);
 					v.setImageResource(R.drawable.star);
 					holder.menu_state.addView(v);
-					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1);
+					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+							0, LinearLayout.LayoutParams.MATCH_PARENT, 1);
 					v.setLayoutParams(lp);
 				}
 				break;
-			case StageView.LOCKED:
+			case StageData.LOCKED:
 				v = new ImageView(MenuActivity.this);
 				v.setImageResource(R.drawable.lock);
 				holder.menu_state.addView(v);
 				break;
-			case StageView.OPENING:
+			case StageData.OPENING:
 				v = new ImageView(MenuActivity.this);
 				v.setImageResource(R.drawable.enter_btn);
+				v.setId(0);
+				v.setOnClickListener(MenuActivity.this);
 				holder.menu_state.addView(v);
 				break;
 			}
@@ -147,19 +139,7 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public class ViewHolder {
-		public ImageView menu_stage;
+		public TextView menu_stage;
 		public LinearLayout menu_state;
-	}
-
-	public class StageInfo {
-		public int level = 0;
-		public int star = 0;
-		public int state = 0;
-
-		public StageInfo(int level, int state, int star) {
-			this.level = level;
-			this.star = star;
-			this.state = state;
-		}
 	}
 }

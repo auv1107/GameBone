@@ -6,11 +6,11 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-import com.Sct.gamebone.Collision;
-import com.Sct.gamebone.TileCache;
-import com.Sct.gamebone.Touchable;
+import com.Sct.gamebone.library.Collision;
+import com.Sct.gamebone.library.TileCache;
+import com.Sct.gamebone.library.Touchable;
 
-public class NAnimator implements Collision, Touchable{
+public class NAnimator implements Collision, Touchable {
 
 	private int delta = 50;
 	private long lastStateTime = 0;
@@ -26,7 +26,7 @@ public class NAnimator implements Collision, Touchable{
 	protected int speed = 0;
 	protected int degree = 0;
 	protected boolean running = false;
-	
+
 	private boolean isSwallow = false;
 	private boolean isTouchable = false;
 	private boolean isStatic = true;
@@ -120,7 +120,7 @@ public class NAnimator implements Collision, Touchable{
 	@Override
 	public void onTouch(MotionEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -144,7 +144,7 @@ public class NAnimator implements Collision, Touchable{
 	@Override
 	public void onCollision(Collision c) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -164,10 +164,11 @@ public class NAnimator implements Collision, Touchable{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	public void setTouchArea(Rect r) {
 		touchArea = r;
 	}
+
 	public void setCollisionArea(Rect r) {
 		collisionArea = r;
 	}

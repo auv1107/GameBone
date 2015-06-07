@@ -1,4 +1,4 @@
-package com.Sct.gamebone.framwork;
+package com.Sct.gamebone.framework;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -18,10 +18,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 		super(context);
 		mHolder = getHolder();
 		mHolder.addCallback(this);
-		mGameEngine = new NGameEngine(context);
-		// mGameEngine = new MapEditor(context);
+		mGameEngine = GameApp.getApplication().getStartupScene();
 		setOnTouchListener(this);
-		mGameEngine.initGame();
+		if (mGameEngine != null)
+			mGameEngine.initGame();
 	}
 
 	@Override
@@ -38,19 +38,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 	@Override
 	public void surfaceDestroyed(SurfaceHolder arg0) {
 		mGameThread.stop();
-		mGameEngine.exit();
+		if (mGameEngine != null)
+			mGameEngine.exit();
 	}
 
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		if (canvas != null)
+		if (canvas != null && mGameEngine != null)
 			mGameEngine.onDraw(canvas);
 	}
 
 	@Override
 	public boolean onTouch(View arg0, MotionEvent e) {
-		mGameEngine.onTouch(e);
+		if (mGameEngine != null)
+			mGameEngine.onTouch(e);
 		return false;
 	}
 

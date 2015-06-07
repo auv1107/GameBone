@@ -1,12 +1,15 @@
-package com.Sct.gamebone.framwork;
+package com.Sct.gamebone.framework;
+
+import android.app.Application;
+import android.graphics.Paint;
 
 import com.Sct.gamebone.activity.BaseActivity;
 
-import android.app.Application;
-
 public class GameApp extends Application {
-	public BaseActivity mCurrentActivity = null;
+	private BaseActivity mCurrentActivity = null;
 	public static GameApp instance = null;
+	private BaseGameEngine mStartupScene = null;
+	private Paint mTempPaint = new Paint();
 
 	public static GameApp getApplication() {
 		return instance;
@@ -32,5 +35,17 @@ public class GameApp extends Application {
 
 	public int getScreenHeight() {
 		return mCurrentActivity.getScreenHeight();
+	}
+
+	public void setStartupScene(BaseGameEngine s) {
+		mStartupScene = s;
+	}
+
+	public BaseGameEngine getStartupScene() {
+		return mStartupScene;
+	}
+
+	public Paint getTempPaint() {
+		return mTempPaint;
 	}
 }

@@ -1,4 +1,4 @@
-package com.Sct.gamebone;
+package com.Sct.gamebone.library;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +14,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
-import com.Sct.gamebone.framwork.GameApp;
-import com.Sct.gamebone.framwork.NGameData.Tileset;
+import com.Sct.gamebone.framework.GameApp;
+import com.Sct.gamebone.framework.NGameData.Tileset;
 
 public class TileCache {
 	private static HashMap<String, Bitmap> bitmap = new HashMap<String, Bitmap>();
