@@ -4,25 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Canvas;
-import android.view.MotionEvent;
-import android.view.View.OnTouchListener;
+import android.graphics.Point;
 
 import com.Sct.gamebone.framework.GameApp;
 
 public class BaseLayer extends BaseNode {
 	protected List<BaseNode> mChildrenList = new ArrayList<BaseNode>();
-	public int width = GameApp.getApplication().getScreenWidth();
-	public int height = GameApp.getApplication().getScreenHeight();
 	private onTouchListener mListener = null;
+	public boolean isSwallow = false;
+
+	public BaseLayer() {
+		width = GameApp.getApplication().getScreenWidth();
+		height = GameApp.getApplication().getScreenHeight();
+	}
 
 	public interface onTouchListener {
-		public void onTouch(MotionEvent e);
+		public void doTouch(int x, int y);
 	}
 
 	@Override
 	public void onDraw(Canvas canvas) {
 		for (BaseNode n : mChildrenList) {
-			n.onDraw(canvas);
+			if (n.isVisible)
+				n.onDraw(canvas);
 		}
 	}
 
@@ -37,9 +41,9 @@ public class BaseLayer extends BaseNode {
 		mListener = l;
 	}
 
-	public void onTouch(MotionEvent e) {
+	public void onTouch(int x, int y) {
 		if (mListener != null)
-			mListener.onTouch(e);
+			mListener.doTouch(x, y);
 	}
 
 	public void addChild(BaseNode n) {
@@ -60,5 +64,13 @@ public class BaseLayer extends BaseNode {
 
 	public void removeAllChildren() {
 		mChildrenList.clear();
+	}
+
+	public static Point coordinateLayer2Screen(BaseLayer layer, int x, int y) {
+		return new Point(layer.getRealX() + x, layer.getRealY() + y);
+	}
+
+	public static Point coordinateScreen2Layer(BaseLayer layer, int x, int y) {
+		return new Point(x - layer.getRealX(), y - layer.getRealY());
 	}
 }

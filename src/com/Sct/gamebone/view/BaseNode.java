@@ -12,12 +12,14 @@ public abstract class BaseNode {
 	public int width = 0;
 	public int height = 0;
 
+	public boolean isVisible = true;
+
 	public int getRealX() {
-		return (int) (x + width * anchorX);
+		return (int) (x - width * anchorX);
 	}
 
 	public int getRealY() {
-		return (int) (y + height * anchorY);
+		return (int) (y - height * anchorY);
 	}
 
 	protected void onDraw(Canvas canvas) {

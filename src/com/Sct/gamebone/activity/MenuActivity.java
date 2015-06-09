@@ -43,16 +43,17 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		Intent intent = new Intent();
 		switch (v.getId()) {
 		// Rewrite here
-		case 0:
-			intent.setClass(this, GameActivity.class);
-			break;
-		case 1:
+		case -1:
 			intent.setClass(this, SetupActivity.class);
 			break;
-		case 2:
+		case -2:
 			intent.setClass(this, HelpActivity.class);
-		case 3:
+		case -3:
 			killApp();
+			break;
+		default:
+			StageData.getInstance().setCurrentLevel(v.getId());
+			intent.setClass(this, GameActivity.class);
 			break;
 		}
 
@@ -128,7 +129,7 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			case StageData.OPENING:
 				v = new ImageView(MenuActivity.this);
 				v.setImageResource(R.drawable.enter_btn);
-				v.setId(0);
+				v.setId(info.level);
 				v.setOnClickListener(MenuActivity.this);
 				holder.menu_state.addView(v);
 				break;

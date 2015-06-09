@@ -2,125 +2,174 @@ package com.Sct.gamebone;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 
+import com.Sct.gamebone.StageData.MapInfo;
+import com.Sct.gamebone.ToolFactory.Tool;
 import com.Sct.gamebone.framework.BaseGameEngine;
 import com.Sct.gamebone.framework.GameApp;
+import com.Sct.gamebone.layers.GameLayer;
+import com.Sct.gamebone.layers.MenuLayer;
+import com.Sct.gamebone.layers.StatusLayer;
 import com.Sct.gamebone.view.BaseLayer;
+import com.Sct.gamebone.view.BaseLayer.onTouchListener;
 import com.Sct.gamebone.view.Sprite;
 import com.Sct.gamebone.view.TextSprite;
 
 public class CandyScene extends BaseGameEngine {
+	public MapInfo info = null;
+	public Point[] mToolsPos = new Point[] { new Point(208, 1920 - 57 - 20),
+			new Point(392, 1920 - 57 - 20), new Point(569, 1920 - 57 - 20),
+			new Point(740, 1920 - 57 - 20) };
+	public Point[] mToolsPricePos = new Point[] { new Point(272, 1920 - 47),
+			new Point(449, 1920 - 47), new Point(647, 1920 - 47),
+			new Point(826, 1920 - 47) };
+	public Point heart_pos = new Point(240, 124);
+	public Point star_pos = new Point(960, 124);
+	public Point stage_name_pos = new Point(GameApp.getApplication()
+			.getScreenWidth() / 2, 100);
+	public int heart_num = 0;
+	public int star_num = 0;
+
+	public int mSelectedToolIndex = 0;
+	public int mSelectedToolType = -1;
+
+	private TextSprite label_stage = null;
+	private TextSprite ts_heart_num = null;
+	private TextSprite ts_star_num = null;
+	private StatusLayer mStatusLayer = null;
+	private GameLayer mGameLayer = null;
+	private MenuLayer mMenuLayer = null;
+
+	public boolean mIsMenuShown = false;
 
 	@Override
 	public void initGame() {
 		// TODO Auto-generated method stub
 		super.initGame();
+		// 获取本关游戏数据
+		info = StageData.getInstance().getMapInfo();
+		heart_num = GameApp.getApplication().getPreferenceInt("heart_num");
+		star_num = GameApp.getApplication().getPreferenceInt("star_num");
+		mSelectedToolType = info.tools_list[0];
+
 		BaseLayer l = new BaseLayer();
-		l.addChild(new Sprite("game_bg_with_component"));
+		l.addChild(new Sprite("game_bg_with_component2"));
 		this.addChild(l);
 
-		BaseLayer l1 = new BaseLayer();
-		Sprite tool_blower = new Sprite("game_tool_blower");
-		tool_blower.x = 208;
-		tool_blower.y = 1920 - 228;
-		l1.addChild(tool_blower);
+		mGameLayer = new GameLayer(this);
+		mGameLayer.x = 28;
+		mGameLayer.y = 210;
+		mGameLayer.width = 1024;
+		mGameLayer.height = 1536;
+		this.addChild(mGameLayer);
 
-		Sprite tool_sheild = new Sprite("game_tool_sheild");
-		tool_sheild.x = 392;
-		tool_sheild.y = 1920 - 228 + 8 + 4;
-		l1.addChild(tool_sheild);
+		mStatusLayer = new StatusLayer(this);
+		for (int i = 0; i < 4; i++) {
+			// add tool
+			Tool t = ToolFactory.getTool(info.tools_list[i]);
+			t.s.anchorX = 0f;
+			t.s.anchorY = 1f;
+			t.s.x = mToolsPos[i].x;
+			t.s.y = mToolsPos[i].y;
+			mStatusLayer.addChild(t.s);
 
-		Sprite tool_lock1 = new Sprite("game_lock");
-		tool_lock1.x = 585 - 16;
-		tool_lock1.y = 1920 - 228 + 18;
-		l1.addChild(tool_lock1);
+			// add price
+			TextSprite price = new TextSprite(""
+					+ (t.price < 0 ? "-" : t.price));
+			price.x = mToolsPricePos[i].x;
+			price.y = mToolsPricePos[i].y;
+			price.setTextSize(25);
+			price.setTextColor(Color.WHITE);
+			mStatusLayer.addChild(price);
+		}
+		mStatusLayer
+				.updateCurrentTool(ToolFactory.getTool(mSelectedToolType).s);
 
-		Sprite tool_lock2 = new Sprite("game_lock");
-		tool_lock2.x = 752 - 8 - 4;
-		tool_lock2.y = 1920 - 228 + 18;
-		l1.addChild(tool_lock2);
+		label_stage = new TextSprite(StageData.getInstance().getStageName());
+		label_stage.setTextColor(Color.WHITE);
+		label_stage.setTextSize(50);
+		label_stage.x = stage_name_pos.x;
+		label_stage.y = stage_name_pos.y;
+		mStatusLayer.addChild(label_stage);
 
-		Sprite label_stage = new Sprite("stage1");
-		label_stage.x = (GameApp.getApplication().getScreenWidth() - label_stage.width) / 2;
-		label_stage.y = 53;
-		l1.addChild(label_stage);
+		ts_heart_num = new TextSprite("" + heart_num);
+		ts_heart_num.x = heart_pos.x;
+		ts_heart_num.y = heart_pos.y;
+		ts_heart_num.setTextSize(50);
+		ts_heart_num.setTextColor(Color.WHITE);
+		mStatusLayer.addChild(ts_heart_num);
 
-		TextSprite heart_num = new TextSprite("" + 10);
-		heart_num.x = 240;
-		heart_num.y = 106 + 18;
-		heart_num.setTextSize(50);
-		heart_num.setTextColor(Color.WHITE);
-		l1.addChild(heart_num);
+		ts_star_num = new TextSprite("" + star_num);
+		ts_star_num.x = star_pos.x;
+		ts_star_num.y = star_pos.y;
+		ts_star_num.setTextSize(50);
+		ts_star_num.setTextColor(Color.WHITE);
+		mStatusLayer.addChild(ts_star_num);
 
-		TextSprite star_num = new TextSprite("" + 123458);
-		star_num.x = 960;
-		star_num.y = 106 + 18;
-		star_num.setTextSize(50);
-		star_num.setTextColor(Color.WHITE);
-		l1.addChild(star_num);
+		this.addChild(mStatusLayer);
 
-		TextSprite price1 = new TextSprite("" + 12);
-		price1.x = 282 - 10;
-		price1.y = 1920 - 50 + 3;
-		price1.setTextSize(25);
-		price1.setTextColor(Color.WHITE);
-		l1.addChild(price1);
-
-		TextSprite price2 = new TextSprite("" + 12);
-		price2.x = 466 - 20 + 3;
-		price2.y = 1920 - 50 + 3;
-		price2.setTextSize(25);
-		price2.setTextColor(Color.WHITE);
-		l1.addChild(price2);
-
-		TextSprite price3 = new TextSprite("-");
-		price3.x = 659 - 15 + 3;
-		price3.y = 1920 - 50 + 3;
-		price3.setTextSize(25);
-		price3.setTextColor(Color.WHITE);
-		l1.addChild(price3);
-
-		TextSprite price4 = new TextSprite("-");
-		price4.x = 826;
-		price4.y = 1920 - 50 + 3;
-		price4.setTextSize(25);
-		price4.setTextColor(Color.WHITE);
-		l1.addChild(price4);
-
-		this.addChild(l1);
+		mStatusLayer.setOnTouchListener(new onTouchListener() {
+			@Override
+			public void doTouch(int x, int y) {
+				// TODO Auto-generated method stub
+				if (CandyScene.this.mMenuLayer.mIsMoving)
+					return;
+				Log.d("CandyScene", "onTouch: " + x + "," + y);
+				if (y > 1660 && y < mToolsPos[0].y) {
+					for (int i = 0; i < 4; i++) {
+						if (info.tools_list[i] == ToolFactory.NONE
+								|| mSelectedToolType == info.tools_list[i])
+							continue;
+						if (x > mToolsPos[i].x && x < mToolsPos[i].x + 110) {
+							mSelectedToolType = info.tools_list[i];
+							mStatusLayer.updateCurrentTool(ToolFactory
+									.getTool(mSelectedToolType).s);
+							mMenuLayer.setToolSprite(ToolFactory
+									.getTool(mSelectedToolType).s);
+						}
+					}
+				}
+			}
+		});
 
 		showGrid();
+
+		mMenuLayer = new MenuLayer(this);
+		addChild(mMenuLayer);
 	}
 
 	private void showGrid() {
 		final int row = 12;
 		final int col = 8;
-		final float p_height = 1358f / row;
-		final float p_width = 1030f / col;
+		final float p_height = 1536f / row;
+		final float p_width = 1024f / col;
 		BaseLayer l = new BaseLayer() {
 			@Override
 			public void onDraw(Canvas canvas) {
 				for (int i = 0; i < row; i++) {
-					canvas.drawLine(0, i * p_height, 1030, i * p_height,
+					canvas.drawLine(0, i * p_height, 1024, i * p_height,
 							GameApp.getApplication().getTempPaint());
 				}
 				for (int i = 0; i < col; i++) {
-					canvas.drawLine(i * p_width, 0, i * p_width, 1358, GameApp
+					canvas.drawLine(i * p_width, 0, i * p_width, 1536, GameApp
 							.getApplication().getTempPaint());
 				}
 			}
 		};
-		l.width = 1030;
-		l.height = 1358;
-		l.x = 18;
-		l.y = 220;
+		l.width = 1024;
+		l.height = 1536;
+		l.x = 28;
+		l.y = 210;
 		addChild(l);
 	}
 
 	@Override
 	public void onTouch(MotionEvent e) {
 		// TODO Auto-generated method stub
+		Log.d("CandyScene", "onTouch");
 		super.onTouch(e);
 	}
 
@@ -130,4 +179,24 @@ public class CandyScene extends BaseGameEngine {
 		super.update(delta);
 	}
 
+	public void hideMenu() {
+		mMenuLayer.hide();
+		mIsMenuShown = false;
+	}
+
+	public void showMenu(int x, int y, int mask) {
+		mMenuLayer.x = x;
+		mMenuLayer.y = y;
+		mMenuLayer.setup(mask);
+		mMenuLayer.show();
+		mIsMenuShown = true;
+	}
+
+	public void placeTool() {
+		mGameLayer.placeTool(mSelectedToolType);
+	}
+
+	public void removeTool() {
+		mGameLayer.removeTool();
+	}
 }

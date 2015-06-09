@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +21,7 @@ import com.Sct.gamebone.library.TileCache;
 
 public class NGameData {
 	public static String MAP1 = "maps/map1.tmx";
+	public static String NMAP1 = "maps/nmap1.tmx";
 
 	private int height = 15;
 	private int width = 30;
@@ -25,6 +29,7 @@ public class NGameData {
 	private int tileheight = 32;
 	private List<List<Integer>> layers = new ArrayList<List<Integer>>();
 	private List<TileObject> tileObject = new ArrayList<TileObject>();
+	private Map<String, TileObject> mapTileObject = new HashMap<String, TileObject>();
 
 	public int getTileWidth() {
 		return tilewidth;
@@ -32,6 +37,12 @@ public class NGameData {
 
 	public int getTileHeight() {
 		return tileheight;
+	}
+
+	public TileObject getTileObject(String name) {
+		if (mapTileObject.containsKey(name))
+			return mapTileObject.get(name);
+		return null;
 	}
 
 	public int getWidth() {
@@ -65,11 +76,11 @@ public class NGameData {
 		return new Rect(left, top, left + tilewidth, top + tileheight);
 	}
 
-	public static NGameData readFromFile(AssetManager assertManager,
-			String filename) {
+	public static NGameData readFromFile(String filename) {
 		String jsonString = "";
 		try {
-			InputStream in = assertManager.open(filename);
+			AssetManager assetManager = GameApp.getApplication().getAssets();
+			InputStream in = assetManager.open(filename);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String tmp = null;
 			while ((tmp = br.readLine()) != null) {
@@ -102,8 +113,10 @@ public class NGameData {
 					for (int j = 0; j < d.length(); j++) {
 						TileObject o = TileObject.parseFromJson(d
 								.getJSONObject(j));
-						if (o != null)
+						if (o != null) {
 							data.tileObject.add(o);
+							data.mapTileObject.put(o.name, o);
+						}
 					}
 				} else {
 					JSONArray d = layer.getJSONArray("data");
@@ -134,6 +147,7 @@ public class NGameData {
 		private String name = "";
 		public int x;
 		public int y;
+		public Map<String, String> properties = new HashMap<String, String>();
 
 		public static TileObject parseFromJson(JSONObject obj) {
 			TileObject to = new TileObject();
@@ -142,6 +156,12 @@ public class NGameData {
 				to.type = obj.getString("type");
 				to.x = obj.getInt("x");
 				to.y = obj.getInt("y");
+
+				JSONObject o = obj.getJSONObject("properties");
+				for (Iterator k = o.keys(); k.hasNext();) {
+					String key = (String) k.next();
+					to.properties.put(key, o.getString(key));
+				}
 				return to;
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

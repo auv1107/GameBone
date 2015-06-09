@@ -55,22 +55,6 @@ public class BaseActivity extends Activity {
 		mp.start();
 	}
 
-	public void putPreference(String key, String value) {
-		SharedPreferences preferences = getSharedPreferences(this
-				.getResources().getString(R.string.app_name),
-				Activity.MODE_PRIVATE);
-		Editor editor = preferences.edit();
-		editor.putString(key, value);
-		editor.commit();
-	}
-
-	public String getPreference(String key) {
-		SharedPreferences preferences = getSharedPreferences(this
-				.getResources().getString(R.string.app_name),
-				Activity.MODE_PRIVATE);
-		return preferences.getString(key, null);
-	}
-
 	public void setFullscreen() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,

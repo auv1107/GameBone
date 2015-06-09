@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.Sct.gamebone.view.BaseLayer;
@@ -39,17 +40,29 @@ public abstract class BaseGameEngine {
 
 	public void onDraw(Canvas canvas) {
 		for (BaseLayer l : mChildrenList) {
-			canvas.save();
-			canvas.translate(l.x, l.y);
-			canvas.clipRect(0, 0, l.width, l.height);
-			l.onDraw(canvas);
-			canvas.restore();
+			if (l.isVisible) {
+				canvas.save();
+				canvas.translate(l.getRealX(), l.getRealY());
+				canvas.clipRect(0, 0, l.width, l.height);
+				l.onDraw(canvas);
+				canvas.restore();
+			}
 		}
 	}
 
 	public void onTouch(MotionEvent e) {
-		for (BaseLayer l : mChildrenList) {
-			l.onTouch(e);
+		for (int i = mChildrenList.size() - 1; i >= 0; i--) {
+			BaseLayer l = mChildrenList.get(i);
+			Rect r = new Rect(l.getRealX(), l.getRealY(), l.getRealX()
+					+ l.width, l.getRealY() + l.height);
+			if (r.contains((int) e.getX(), (int) e.getY())) {
+				int x = (int) (e.getX() - l.getRealX());
+				int y = (int) (e.getY() - l.getRealY());
+				l.onTouch(x, y);
+
+				if (l.isSwallow)
+					break;
+			}
 		}
 	}
 

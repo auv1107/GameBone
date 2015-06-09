@@ -58,8 +58,7 @@ public class NGameEngine extends BaseGameEngine {
 	@Override
 	public void initGame() {
 		// TODO Auto-generated method stub
-		mNGameData = NGameData.readFromFile(getContext().getAssets(),
-				NGameData.MAP1);
+		mNGameData = NGameData.readFromFile(NGameData.MAP1);
 		makeupdata();
 		addShooter();
 		addEnergy();

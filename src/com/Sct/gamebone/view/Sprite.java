@@ -24,9 +24,21 @@ public class Sprite extends BaseNode {
 	}
 
 	@Override
-	protected void onDraw(Canvas canvas) {
+	public void onDraw(Canvas canvas) {
 		if (mBitmap != null)
-			canvas.drawBitmap(mBitmap, x, y, GameApp.getApplication()
-					.getTempPaint());
+			canvas.drawBitmap(mBitmap, getRealX(), getRealY(), GameApp
+					.getApplication().getTempPaint());
+	}
+
+	public void setBitmap(Bitmap b) {
+		mBitmap = b;
+	}
+
+	public void setBitmap(String s) {
+		setBitmap(BitmapCache.get(s));
+	}
+
+	public void setSprite(Sprite s) {
+		setBitmap(s.mBitmap);
 	}
 }

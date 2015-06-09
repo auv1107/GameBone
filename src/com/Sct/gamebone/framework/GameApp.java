@@ -1,8 +1,12 @@
 package com.Sct.gamebone.framework;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Paint;
 
+import com.Sct.gamebone.R;
 import com.Sct.gamebone.activity.BaseActivity;
 
 public class GameApp extends Application {
@@ -48,4 +52,37 @@ public class GameApp extends Application {
 	public Paint getTempPaint() {
 		return mTempPaint;
 	}
+
+	public void putPreference(String key, String value) {
+		SharedPreferences preferences = getSharedPreferences(this
+				.getResources().getString(R.string.app_name),
+				Activity.MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		editor.putString(key, value);
+		editor.commit();
+	}
+
+	public String getPreference(String key) {
+		SharedPreferences preferences = getSharedPreferences(this
+				.getResources().getString(R.string.app_name),
+				Activity.MODE_PRIVATE);
+		return preferences.getString(key, null);
+	}
+
+	public void putPreference(String key, int value) {
+		SharedPreferences preferences = getSharedPreferences(this
+				.getResources().getString(R.string.app_name),
+				Activity.MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		editor.putInt(key, value);
+		editor.commit();
+	}
+
+	public int getPreferenceInt(String key) {
+		SharedPreferences preferences = getSharedPreferences(this
+				.getResources().getString(R.string.app_name),
+				Activity.MODE_PRIVATE);
+		return preferences.getInt(key, 0);
+	}
+
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
@@ -51,6 +52,26 @@ public class TileCache {
 			}
 		}
 		return b;
+	}
+
+	public static Bitmap get(int id) {
+		Bitmap bm = null;
+		for (int i = tilesets.size() - 1; i >= 0; i--) {
+			Tileset ts = tilesets.get(i);
+			if (id >= ts.getFirstgid() && id <= ts.getLastgid()) {
+				if (bitmap.containsKey(ts.getName())) {
+					Bitmap b = bitmap.get(ts.getName());
+					Rect r = ts.getRect(id);
+					bm = Bitmap.createBitmap(r.width(), r.height(),
+							Config.ARGB_8888);
+					Canvas c = new Canvas(bm);
+					c.drawBitmap(b, r, new Rect(0, 0, r.width(), r.height()),
+							GameApp.getApplication().getTempPaint());
+				}
+				break;
+			}
+		}
+		return bm;
 	}
 
 	public static void Draw(Canvas canvas, int id, Rect dst, Paint paint) {
