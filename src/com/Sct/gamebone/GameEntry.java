@@ -4,7 +4,10 @@ import java.lang.reflect.Field;
 
 import com.Sct.gamebone.R.drawable;
 import com.Sct.gamebone.framework.GameApp;
+import com.Sct.gamebone.framework.NGameData.Tileset;
 import com.Sct.gamebone.library.BitmapCache;
+import com.Sct.gamebone.library.SoundCache;
+import com.Sct.gamebone.library.TileCache;
 
 public class GameEntry {
 	private static GameEntry instance = null;
@@ -18,6 +21,7 @@ public class GameEntry {
 	public void prepare() {
 		// prepare some resources for game
 		prepareImages();
+		prepareMusic();
 	}
 
 	public void run() {
@@ -25,7 +29,7 @@ public class GameEntry {
 	}
 
 	public void app() {
-		GameApp.getApplication().setStartupScene(new CandyScene());
+		GameApp.getApplication().setStartupScene(CandyScene.class.getName());
 	}
 
 	public void prepareImages() {
@@ -42,5 +46,17 @@ public class GameEntry {
 				e.printStackTrace();
 			}
 		}
+
+		Tileset ts = new Tileset(960, 960, "light", 192, 192, "#FF000000");
+		TileCache.AddTileset(ts);
+	}
+
+	public void prepareMusic() {
+		SoundCache.AddMusic("menu", R.raw.menu);
+		SoundCache.AddAudio("click", R.raw.click);
+		SoundCache.AddMusic("downfall30", R.raw.downfall30);
+		SoundCache.AddAudio("ensure003", R.raw.ensure003);
+		SoundCache.AddAudio("cancel001", R.raw.cancel001);
+		SoundCache.AddAudio("follow06", R.raw.follow06);
 	}
 }

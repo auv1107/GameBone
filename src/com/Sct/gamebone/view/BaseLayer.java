@@ -19,7 +19,19 @@ public class BaseLayer extends BaseNode {
 	}
 
 	public interface onTouchListener {
-		public void doTouch(int x, int y);
+		public boolean doTouch(int x, int y);
+	}
+
+	public void initLayer() {
+
+	}
+
+	public void enter() {
+
+	}
+
+	public void exit() {
+
 	}
 
 	@Override
@@ -41,9 +53,10 @@ public class BaseLayer extends BaseNode {
 		mListener = l;
 	}
 
-	public void onTouch(int x, int y) {
+	public boolean onTouch(int x, int y) {
 		if (mListener != null)
-			mListener.doTouch(x, y);
+			return mListener.doTouch(x, y);
+		return false;
 	}
 
 	public void addChild(BaseNode n) {

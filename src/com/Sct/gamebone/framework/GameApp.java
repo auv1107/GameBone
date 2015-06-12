@@ -12,7 +12,7 @@ import com.Sct.gamebone.activity.BaseActivity;
 public class GameApp extends Application {
 	private BaseActivity mCurrentActivity = null;
 	public static GameApp instance = null;
-	private BaseGameEngine mStartupScene = null;
+	private String mStartupSceneClassName = null;
 	private Paint mTempPaint = new Paint();
 
 	public static GameApp getApplication() {
@@ -33,6 +33,10 @@ public class GameApp extends Application {
 		mCurrentActivity = activity;
 	}
 
+	public BaseActivity getCurrentActivity() {
+		return mCurrentActivity;
+	}
+
 	public int getScreenWidth() {
 		return mCurrentActivity.getScreenWidth();
 	}
@@ -41,12 +45,20 @@ public class GameApp extends Application {
 		return mCurrentActivity.getScreenHeight();
 	}
 
-	public void setStartupScene(BaseGameEngine s) {
-		mStartupScene = s;
+	public void setStartupScene(String s) {
+		mStartupSceneClassName = s;
 	}
 
 	public BaseGameEngine getStartupScene() {
-		return mStartupScene;
+		try {
+			return (BaseGameEngine) Class.forName(mStartupSceneClassName)
+					.newInstance();
+		} catch (InstantiationException | IllegalAccessException
+				| ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public Paint getTempPaint() {

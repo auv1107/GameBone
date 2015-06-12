@@ -39,16 +39,22 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 		mOkBtn.x = 0;
 		mOkBtn.y = height * 2 / 3;
 		mOkBtn.anchorY = 1.0f;
+		mOkBtn.width = 64;
+		mOkBtn.height = 64;
 
 		mRemoveBtn.x = width;
 		mRemoveBtn.y = height * 2 / 3;
 		mRemoveBtn.anchorX = 1.0f;
 		mRemoveBtn.anchorY = 1.0f;
+		mRemoveBtn.width = 64;
+		mRemoveBtn.height = 64;
 
 		mMoveBtn.x = width / 2;
 		mMoveBtn.y = 0;
 		mMoveBtn.anchorX = 0.5f;
 		mMoveBtn.anchorY = 0f;
+		mMoveBtn.width = 64;
+		mMoveBtn.height = 64;
 
 		mToolIcon.x = width / 2;
 		mToolIcon.y = height;
@@ -82,11 +88,11 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 	}
 
 	public void setToolSprite(Sprite s) {
-		mToolIcon.setSprite(s);
+		mToolIcon.setBitmap(s);
 	}
 
 	@Override
-	public void doTouch(int x, int y) {
+	public boolean doTouch(int x, int y) {
 		// TODO Auto-generated method stub
 		if (new Rect(0, 64, 64, 128).contains(x, y) && mOkBtn.isVisible) {
 			// do ok things
@@ -95,6 +101,7 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 			if (mIsMoving)
 				mIsMoving = false;
 			hide();
+			return true;
 		}
 		if (new Rect(256 - 64, 64, 256, 128).contains(x, y)
 				&& mRemoveBtn.isVisible) {
@@ -102,6 +109,7 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 			Log.d("MenuLayer", "do remove things");
 			mScene.removeTool();
 			hide();
+			return true;
 		}
 		if (new Rect(128 - 32, 0, 128 + 32, 64).contains(x, y)
 				&& mMoveBtn.isVisible) {
@@ -110,6 +118,8 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 			mScene.removeTool();
 			setup(1 << OK_BUTTON | 1 << TOOL_ICON);
 			mIsMoving = true;
+			return true;
 		}
+		return false;
 	}
 }

@@ -1,5 +1,10 @@
 package com.Sct.gamebone;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.graphics.Rect;
+
 import com.Sct.gamebone.library.BitmapCache;
 import com.Sct.gamebone.view.Sprite;
 
@@ -36,16 +41,51 @@ public class ToolFactory {
 		public Sprite s = null;
 		public int price = 0;
 		public int type = -1;
+		public List<Candy> mCandyList = new ArrayList<Candy>();
 
-		public void enter(Candy c) {
+		public void get(Candy c) {
+			if (mCandyList.contains(c)) {
+				mCandyList.remove(c);
+			}
+			mCandyList.add(c);
 
+			if (type == SHEILD) {
+				c.setDirection(c.getDirection() + 90);
+			}
+			if (type == BLOWER) {
+				c.setDirection(c.getDirection() + 45);
+			}
 		}
 
-		public void exit(Candy c) {
-
+		public void lose(Candy c) {
+			mCandyList.remove(c);
 		}
 
-		public boolean contains(Candy c) {
+		// 在Tool的candy集合里有c
+		public boolean has(Candy c) {
+			if (mCandyList.contains(c)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		// 在Tool的范围内包含C
+		public boolean contains(Candy c, Rect gridBound) {
+			if (type == SHEILD) {
+				int xdiff = c.getCenterX() - gridBound.centerX();
+				int ydiff = c.getCenterY() - gridBound.centerY();
+				int dist2 = xdiff * xdiff + ydiff * ydiff;
+				if (dist2 <= gridBound.width() * gridBound.width() / 9)
+					return true;
+			}
+			if (type == BLOWER) {
+				int xdiff = c.getCenterX() - gridBound.centerX();
+				int ydiff = c.getCenterY() - gridBound.centerY();
+				int dist2 = xdiff * xdiff + ydiff * ydiff;
+				if (dist2 <= gridBound.width() * gridBound.width() / 9)
+					return true;
+			}
 			return false;
 		}
 	}

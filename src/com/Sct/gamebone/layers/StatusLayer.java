@@ -24,7 +24,7 @@ public class StatusLayer extends BaseLayer {
 			mCurrentToolSprite.y = mCurrentToolPos.y;
 			addChild(mCurrentToolSprite);
 		} else {
-			mCurrentToolSprite.setSprite(s);
+			mCurrentToolSprite.setBitmap(s);
 		}
 	}
 }

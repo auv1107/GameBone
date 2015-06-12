@@ -4,11 +4,8 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.Sct.gamebone.GameEntry;
@@ -26,9 +23,15 @@ public class LoadingActivity extends BaseActivity implements AnimatorListener {
 		bg.animate().alpha(1.0f).setDuration(2000)
 				.setInterpolator(new DecelerateInterpolator())
 				.setListener(this).start();
-		GameEntry.getInstance().prepare();
-		GameEntry.getInstance().app();
-		// ValueAnimator va = ValueAnimator.ofFloat();
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				GameEntry.getInstance().prepare();
+				GameEntry.getInstance().app();
+			}
+		}).start();
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.Sct.gamebone.R;
 import com.Sct.gamebone.StageData;
 import com.Sct.gamebone.StageData.StageInfo;
+import com.Sct.gamebone.library.SoundCache;
 
 public class MenuActivity extends BaseActivity implements OnClickListener {
 	private List<StageInfo> mStageList = null;
@@ -31,11 +32,7 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		ListView lv = (ListView) findViewById(R.id.stage_list);
 		lv.setAdapter(new MenuAdapter(this));
 
-		/* start of USELESS codes */
-		// View v = new View(this);
-		// v.setId(0);
-		// onClick(v);
-		/* end of USELESS codes */
+		SoundCache.PlayMusic("menu", true);
 	}
 
 	@Override
@@ -57,7 +54,16 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			break;
 		}
 
+		SoundCache.StopMusic("menu");
+		SoundCache.PlayAudio("click");
 		startActivity(intent);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		SoundCache.StopMusic("menu");
 	}
 
 	public class MenuAdapter extends BaseAdapter {

@@ -1,5 +1,7 @@
 package com.Sct.gamebone.framework;
 
+import com.Sct.gamebone.framework.BaseGameEngine.SceneManageCallback;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
@@ -9,10 +11,20 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback,
-		OnTouchListener {
+		OnTouchListener, SceneManageCallback {
 	protected SurfaceHolder mHolder = null;
 	protected GameThread mGameThread = null;
 	protected BaseGameEngine mGameEngine = null;
+
+	protected Callback mCallback = null;
+
+	public interface Callback {
+		public void onExit();
+	}
+
+	public void setCallback(Callback c) {
+		mCallback = c;
+	}
 
 	public GameView(Context context) {
 		super(context);
@@ -22,6 +34,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 		setOnTouchListener(this);
 		if (mGameEngine != null)
 			mGameEngine.initGame();
+		mGameEngine.setSceneManageCallback(this);
 	}
 
 	@Override
@@ -33,6 +46,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 	public void surfaceCreated(SurfaceHolder arg0) {
 		mGameThread = new GameThread(this, mHolder);
 		mGameThread.start();
+		mGameEngine.enter();
 	}
 
 	@Override
@@ -54,6 +68,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,
 		if (mGameEngine != null)
 			mGameEngine.onTouch(e);
 		return false;
+	}
+
+	@Override
+	public void onEnter() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onExit() {
+		// TODO Auto-generated method stub
+		if (mCallback != null)
+			mCallback.onExit();
 	}
 
 }

@@ -12,7 +12,9 @@ import com.Sct.gamebone.framework.BaseGameEngine;
 import com.Sct.gamebone.framework.GameApp;
 import com.Sct.gamebone.layers.GameLayer;
 import com.Sct.gamebone.layers.MenuLayer;
+import com.Sct.gamebone.layers.ResultLayer;
 import com.Sct.gamebone.layers.StatusLayer;
+import com.Sct.gamebone.library.SoundCache;
 import com.Sct.gamebone.view.BaseLayer;
 import com.Sct.gamebone.view.BaseLayer.onTouchListener;
 import com.Sct.gamebone.view.Sprite;
@@ -42,6 +44,7 @@ public class CandyScene extends BaseGameEngine {
 	private StatusLayer mStatusLayer = null;
 	private GameLayer mGameLayer = null;
 	private MenuLayer mMenuLayer = null;
+	private ResultLayer mResultLayer = null;
 
 	public boolean mIsMenuShown = false;
 
@@ -62,8 +65,6 @@ public class CandyScene extends BaseGameEngine {
 		mGameLayer = new GameLayer(this);
 		mGameLayer.x = 28;
 		mGameLayer.y = 210;
-		mGameLayer.width = 1024;
-		mGameLayer.height = 1536;
 		this.addChild(mGameLayer);
 
 		mStatusLayer = new StatusLayer(this);
@@ -113,10 +114,11 @@ public class CandyScene extends BaseGameEngine {
 
 		mStatusLayer.setOnTouchListener(new onTouchListener() {
 			@Override
-			public void doTouch(int x, int y) {
+			public boolean doTouch(int x, int y) {
 				// TODO Auto-generated method stub
+				SoundCache.PlayAudio("click");
 				if (CandyScene.this.mMenuLayer.mIsMoving)
-					return;
+					return false;
 				Log.d("CandyScene", "onTouch: " + x + "," + y);
 				if (y > 1660 && y < mToolsPos[0].y) {
 					for (int i = 0; i < 4; i++) {
@@ -129,9 +131,11 @@ public class CandyScene extends BaseGameEngine {
 									.getTool(mSelectedToolType).s);
 							mMenuLayer.setToolSprite(ToolFactory
 									.getTool(mSelectedToolType).s);
+							return true;
 						}
 					}
 				}
+				return false;
 			}
 		});
 
@@ -139,6 +143,36 @@ public class CandyScene extends BaseGameEngine {
 
 		mMenuLayer = new MenuLayer(this);
 		addChild(mMenuLayer);
+	}
+
+	@Override
+	public void enter() {
+		for (BaseLayer l : mChildrenList) {
+			l.enter();
+		}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					Thread.sleep(2500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					SoundCache.PlayMusic("downfall30", true);
+				}
+			}
+		}).start();
+	}
+
+	@Override
+	public void exit() {
+		SoundCache.StopMusic("downfall30");
+		for (BaseLayer l : mChildrenList) {
+			l.exit();
+		}
+		super.exit();
 	}
 
 	private void showGrid() {
@@ -198,5 +232,51 @@ public class CandyScene extends BaseGameEngine {
 
 	public void removeTool() {
 		mGameLayer.removeTool();
+	}
+
+	public void pass() {
+		Log.d("candyscene", "passed");
+		mResultLayer = new ResultLayer(this, StageData.PASSED, 3);
+		mResultLayer.initLayer();
+		addChild(mResultLayer);
+	}
+
+	public void lose() {
+
+	}
+
+	public void nextStage() {
+		reset();
+		StageData.getInstance().setCurrentLevel(
+				StageData.getInstance().getCurrentLevel() + 0);
+		initGame();
+		enter();
+	}
+
+	public void replay() {
+		reset();
+		initGame();
+		enter();
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+
+		heart_num = 0;
+		star_num = 0;
+
+		mSelectedToolIndex = 0;
+		mSelectedToolType = -1;
+
+		label_stage = null;
+		ts_heart_num = null;
+		ts_star_num = null;
+		mStatusLayer = null;
+		mGameLayer = null;
+		mMenuLayer = null;
+		mResultLayer = null;
+
+		mIsMenuShown = false;
 	}
 }

@@ -53,6 +53,10 @@ public class StageData {
 		return mList.get(mCurrentLevel).name;
 	}
 
+	public int getCurrentLevel() {
+		return mCurrentLevel;
+	}
+
 	public static class StageInfo {
 		public int level = 0;
 		public int star = 0;
