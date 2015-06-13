@@ -11,7 +11,7 @@ public class ResultLayer extends BaseLayer {
 	protected int mStar = 0;
 
 	private Sprite mBtnChoice = null;
-	private Sprite mBtnClose = null;
+	private Sprite mBtnBack = null;
 
 	public ResultLayer(CandyScene scene, int state, int star) {
 		mScene = scene;
@@ -43,25 +43,33 @@ public class ResultLayer extends BaseLayer {
 		head.y = board.getRealY();
 		addChild(head);
 
-		mBtnClose = new Sprite("btn_close");
-		mBtnClose.anchorX = 0.5f;
-		mBtnClose.anchorY = 0.5f;
-		mBtnClose.x = board.getRealX() + board.width;
-		mBtnClose.y = board.getRealY();
-		addChild(mBtnClose);
+		mBtnBack = new Sprite("btn_back");
+		mBtnBack.anchorX = 0.5f;
+		mBtnBack.anchorY = 0.5f;
+		mBtnBack.x = board.getRealX() + board.width;
+		mBtnBack.y = board.getRealY();
+		addChild(mBtnBack);
 
 		Sprite label = null;
 		Sprite star = null;
 		if (mState == StageData.PASSED) {
-			label = new Sprite("go_success_label");
-			mBtnChoice = new Sprite("next_stage");
-			star = new Sprite("star");
+			star = new Sprite("star" + mStar);
+			if (StageData.getInstance().isLastLevel(
+					StageData.getInstance().getCurrentLevel())) {
+				label = new Sprite("allpass");
+				mBtnChoice = new Sprite("btn_first_stage");
+			} else {
+				label = new Sprite("go_success_label");
+				mBtnChoice = new Sprite("next_stage");
+			}
 		} else {
 			label = new Sprite("go_fail_label");
 			mBtnChoice = new Sprite("replay");
 			star = new Sprite();
 		}
+
 		label.anchorX = 0.5f;
+		label.anchorY = 0.5f;
 		mBtnChoice.anchorX = 0.5f;
 		star.anchorX = 0.5f;
 		label.x = width / 2;
@@ -86,7 +94,7 @@ public class ResultLayer extends BaseLayer {
 					else
 						mScene.replay();
 				}
-				if (mBtnClose.getDestBound().contains(x, y)) {
+				if (mBtnBack.getDestBound().contains(x, y)) {
 					mScene.exit();
 				}
 				return true;

@@ -2,8 +2,8 @@ package com.Sct.gamebone;
 
 import android.graphics.Canvas;
 
-import com.Sct.gamebone.ToolFactory.Tool;
 import com.Sct.gamebone.layers.GameLayer;
+import com.Sct.gamebone.tools.BaseTool;
 import com.Sct.gamebone.view.Sprite;
 
 public class Candy {
@@ -34,11 +34,11 @@ public class Candy {
 
 	}
 
-	public void enter(Tool t) {
+	public void enter(BaseTool t) {
 		t.get(this);
 	}
 
-	public void exit(Tool t) {
+	public void exit(BaseTool t) {
 		t.lose(this);
 	}
 

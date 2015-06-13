@@ -43,8 +43,11 @@ public class SoundCache {
 			return;
 
 		MediaPlayer mp = mMusicMap.get(key);
-		mp.setLooping(loop);
-		mp.start();
+		if (mp != null) {
+			mp.setLooping(loop);
+			mp.seekTo(0);
+			mp.start();
+		}
 	}
 
 	public static void PlayAudio(String key) {
@@ -66,8 +69,8 @@ public class SoundCache {
 
 	public static void StopMusic(String key) {
 		MediaPlayer mp = mMusicMap.get(key);
-		if (mp.isPlaying()) {
-			mp.stop();
+		if (mp != null && mp.isPlaying()) {
+			mp.pause();
 		}
 	}
 

@@ -19,10 +19,10 @@ import com.Sct.gamebone.Candy.onCandyMovedListener;
 import com.Sct.gamebone.CandyScene;
 import com.Sct.gamebone.StageData.MapInfo;
 import com.Sct.gamebone.ToolFactory;
-import com.Sct.gamebone.ToolFactory.Tool;
 import com.Sct.gamebone.framework.GameApp;
 import com.Sct.gamebone.library.SoundCache;
 import com.Sct.gamebone.library.TileCache;
+import com.Sct.gamebone.tools.BaseTool;
 import com.Sct.gamebone.view.BaseLayer;
 import com.Sct.gamebone.view.BaseLayer.onTouchListener;
 import com.Sct.gamebone.view.FrameAnimation;
@@ -34,7 +34,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	public int col = 0;
 	public MapInfo mMap = null;
 
-	public List<Tool> mTool_layer;
+	public List<BaseTool> mTool_layer;
 
 	private int mDstId = -1;
 
@@ -53,8 +53,8 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 		col = mScene.info.col;
 		mMap = mScene.info;
 		setOnTouchListener(this);
-		mTool_layer = new ArrayList<Tool>(Collections.nCopies(row * col,
-				(Tool) null));
+		mTool_layer = new ArrayList<BaseTool>(Collections.nCopies(row * col,
+				(BaseTool) null));
 
 		int firstgid = TileCache.getFirstGid("light");
 		Rect dst = getRect(mMap.exit_pos);
@@ -76,7 +76,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 			public void onCandyMoved(Candy c) {
 				// TODO Auto-generated method stub
 				for (int i = 0; i < mTool_layer.size(); i++) {
-					Tool t = mTool_layer.get(i);
+					BaseTool t = mTool_layer.get(i);
 					if (t != null) {
 						if (t.has(c) && !t.contains(c, getRect(i))) {
 							t.lose(c);
@@ -120,7 +120,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 					c.stop();
 				}
 				for (int i = 0; i < mTool_layer.size(); i++) {
-					Tool t = mTool_layer.get(i);
+					BaseTool t = mTool_layer.get(i);
 					if (t != null) {
 						if (t.has(c) && !t.contains(c, getRect(i))) {
 							t.lose(c);
@@ -194,7 +194,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	}
 
 	public void drawTools(Canvas canvas) {
-		for (Tool t : mTool_layer) {
+		for (BaseTool t : mTool_layer) {
 			if (t != null)
 				t.s.onDraw(canvas);
 		}
@@ -258,7 +258,8 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 			Rect r = getRect(mDstId);
 			Point p = coordinateLayer2Screen(this, r.left, r.top);
 			mScene.showMenu(p.x, p.y, 1 << MenuLayer.MOVE_BUTTON
-					| 1 << MenuLayer.REMOVE_BUTTON);
+					| 1 << MenuLayer.REMOVE_BUTTON
+					| 1 << MenuLayer.ROTATE_BUTTON);
 		}
 		return true;
 	}
@@ -266,7 +267,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	public void placeTool(int tooltype) {
 		if (mDstId == -1)
 			return;
-		Tool t = ToolFactory.getTool(tooltype);
+		BaseTool t = ToolFactory.getTool(tooltype);
 		Rect r = getRect(mDstId);
 		t.s.x = r.left;
 		t.s.y = r.top;
@@ -286,6 +287,16 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 
 		SoundCache.PlayAudio("cancel001");
 		rebuildPath();
+	}
+
+	public void rotateTool() {
+		if (mDstId == -1) {
+			return;
+		}
+		BaseTool t = mTool_layer.get(mDstId);
+		if (t != null) {
+			t.rotate();
+		}
 	}
 
 	public void rebuildPath() {

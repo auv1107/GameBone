@@ -81,7 +81,7 @@ public class GameApp extends Application {
 		return preferences.getString(key, null);
 	}
 
-	public void putPreference(String key, int value) {
+	public void putPreferenceInt(String key, int value) {
 		SharedPreferences preferences = getSharedPreferences(this
 				.getResources().getString(R.string.app_name),
 				Activity.MODE_PRIVATE);

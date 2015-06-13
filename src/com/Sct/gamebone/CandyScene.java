@@ -1,13 +1,10 @@
 package com.Sct.gamebone;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.Sct.gamebone.StageData.MapInfo;
-import com.Sct.gamebone.ToolFactory.Tool;
 import com.Sct.gamebone.framework.BaseGameEngine;
 import com.Sct.gamebone.framework.GameApp;
 import com.Sct.gamebone.layers.GameLayer;
@@ -16,35 +13,25 @@ import com.Sct.gamebone.layers.ResultLayer;
 import com.Sct.gamebone.layers.StatusLayer;
 import com.Sct.gamebone.library.SoundCache;
 import com.Sct.gamebone.view.BaseLayer;
-import com.Sct.gamebone.view.BaseLayer.onTouchListener;
 import com.Sct.gamebone.view.Sprite;
-import com.Sct.gamebone.view.TextSprite;
 
 public class CandyScene extends BaseGameEngine {
 	public MapInfo info = null;
-	public Point[] mToolsPos = new Point[] { new Point(208, 1920 - 57 - 20),
-			new Point(392, 1920 - 57 - 20), new Point(569, 1920 - 57 - 20),
-			new Point(740, 1920 - 57 - 20) };
-	public Point[] mToolsPricePos = new Point[] { new Point(272, 1920 - 47),
-			new Point(449, 1920 - 47), new Point(647, 1920 - 47),
-			new Point(826, 1920 - 47) };
-	public Point heart_pos = new Point(240, 124);
-	public Point star_pos = new Point(960, 124);
-	public Point stage_name_pos = new Point(GameApp.getApplication()
-			.getScreenWidth() / 2, 100);
+	public int mCurrentLevel = 0;
+
 	public int heart_num = 0;
-	public int star_num = 0;
+	public int coin_num = 0;
+	public int cost_coin = 0;
 
 	public int mSelectedToolIndex = 0;
 	public int mSelectedToolType = -1;
 
-	private TextSprite label_stage = null;
-	private TextSprite ts_heart_num = null;
-	private TextSprite ts_star_num = null;
-	private StatusLayer mStatusLayer = null;
-	private GameLayer mGameLayer = null;
-	private MenuLayer mMenuLayer = null;
-	private ResultLayer mResultLayer = null;
+	public GameLayer mGameLayer = null;
+	public MenuLayer mMenuLayer = null;
+	public ResultLayer mResultLayer = null;
+	public StatusLayer mStatusLayer = null;
+
+	public int state = StageData.OPENING;
 
 	public boolean mIsMenuShown = false;
 
@@ -53,9 +40,10 @@ public class CandyScene extends BaseGameEngine {
 		// TODO Auto-generated method stub
 		super.initGame();
 		// 获取本关游戏数据
+		mCurrentLevel = StageData.getInstance().getCurrentLevel();
 		info = StageData.getInstance().getMapInfo();
-		heart_num = GameApp.getApplication().getPreferenceInt("heart_num");
-		star_num = GameApp.getApplication().getPreferenceInt("star_num");
+		heart_num = StageData.getInstance().heart_num;
+		coin_num = StageData.getInstance().coin_num;
 		mSelectedToolType = info.tools_list[0];
 
 		BaseLayer l = new BaseLayer();
@@ -65,79 +53,11 @@ public class CandyScene extends BaseGameEngine {
 		mGameLayer = new GameLayer(this);
 		mGameLayer.x = 28;
 		mGameLayer.y = 210;
-		this.addChild(mGameLayer);
+		addChild(mGameLayer);
 
 		mStatusLayer = new StatusLayer(this);
-		for (int i = 0; i < 4; i++) {
-			// add tool
-			Tool t = ToolFactory.getTool(info.tools_list[i]);
-			t.s.anchorX = 0f;
-			t.s.anchorY = 1f;
-			t.s.x = mToolsPos[i].x;
-			t.s.y = mToolsPos[i].y;
-			mStatusLayer.addChild(t.s);
-
-			// add price
-			TextSprite price = new TextSprite(""
-					+ (t.price < 0 ? "-" : t.price));
-			price.x = mToolsPricePos[i].x;
-			price.y = mToolsPricePos[i].y;
-			price.setTextSize(25);
-			price.setTextColor(Color.WHITE);
-			mStatusLayer.addChild(price);
-		}
-		mStatusLayer
-				.updateCurrentTool(ToolFactory.getTool(mSelectedToolType).s);
-
-		label_stage = new TextSprite(StageData.getInstance().getStageName());
-		label_stage.setTextColor(Color.WHITE);
-		label_stage.setTextSize(50);
-		label_stage.x = stage_name_pos.x;
-		label_stage.y = stage_name_pos.y;
-		mStatusLayer.addChild(label_stage);
-
-		ts_heart_num = new TextSprite("" + heart_num);
-		ts_heart_num.x = heart_pos.x;
-		ts_heart_num.y = heart_pos.y;
-		ts_heart_num.setTextSize(50);
-		ts_heart_num.setTextColor(Color.WHITE);
-		mStatusLayer.addChild(ts_heart_num);
-
-		ts_star_num = new TextSprite("" + star_num);
-		ts_star_num.x = star_pos.x;
-		ts_star_num.y = star_pos.y;
-		ts_star_num.setTextSize(50);
-		ts_star_num.setTextColor(Color.WHITE);
-		mStatusLayer.addChild(ts_star_num);
-
-		this.addChild(mStatusLayer);
-
-		mStatusLayer.setOnTouchListener(new onTouchListener() {
-			@Override
-			public boolean doTouch(int x, int y) {
-				// TODO Auto-generated method stub
-				SoundCache.PlayAudio("click");
-				if (CandyScene.this.mMenuLayer.mIsMoving)
-					return false;
-				Log.d("CandyScene", "onTouch: " + x + "," + y);
-				if (y > 1660 && y < mToolsPos[0].y) {
-					for (int i = 0; i < 4; i++) {
-						if (info.tools_list[i] == ToolFactory.NONE
-								|| mSelectedToolType == info.tools_list[i])
-							continue;
-						if (x > mToolsPos[i].x && x < mToolsPos[i].x + 110) {
-							mSelectedToolType = info.tools_list[i];
-							mStatusLayer.updateCurrentTool(ToolFactory
-									.getTool(mSelectedToolType).s);
-							mMenuLayer.setToolSprite(ToolFactory
-									.getTool(mSelectedToolType).s);
-							return true;
-						}
-					}
-				}
-				return false;
-			}
-		});
+		mStatusLayer.initLayer();
+		addChild(mStatusLayer);
 
 		showGrid();
 
@@ -226,19 +146,36 @@ public class CandyScene extends BaseGameEngine {
 		mIsMenuShown = true;
 	}
 
-	public void placeTool() {
+	public void placeTool(boolean isMoving) {
 		mGameLayer.placeTool(mSelectedToolType);
+		mStatusLayer.cost(mSelectedToolType, isMoving);
 	}
 
 	public void removeTool() {
 		mGameLayer.removeTool();
 	}
 
+	public void rotateTool() {
+		mGameLayer.rotateTool();
+	}
+
 	public void pass() {
 		Log.d("candyscene", "passed");
-		mResultLayer = new ResultLayer(this, StageData.PASSED, 3);
+		state = StageData.PASSED;
+		int star = EvaluationSystem.evaluate(mCurrentLevel, cost_coin, 0);
+		writeDataToPreference();
+		mResultLayer = new ResultLayer(this, state, star);
 		mResultLayer.initLayer();
 		addChild(mResultLayer);
+	}
+
+	public void writeDataToPreference() {
+		int star = EvaluationSystem.evaluate(mCurrentLevel, cost_coin, 0);
+		StageData.getInstance().updateStageInfo(mCurrentLevel, state, star);
+		StageData.getInstance().openNextState();
+		StageData.getInstance().coin_num = coin_num;
+		StageData.getInstance().heart_num = heart_num;
+		StageData.getInstance().writeToPreferences();
 	}
 
 	public void lose() {
@@ -248,7 +185,7 @@ public class CandyScene extends BaseGameEngine {
 	public void nextStage() {
 		reset();
 		StageData.getInstance().setCurrentLevel(
-				StageData.getInstance().getCurrentLevel() + 0);
+				StageData.getInstance().getCurrentLevel() + 1);
 		initGame();
 		enter();
 	}
@@ -264,18 +201,17 @@ public class CandyScene extends BaseGameEngine {
 		super.reset();
 
 		heart_num = 0;
-		star_num = 0;
+		coin_num = 0;
+		cost_coin = 0;
 
 		mSelectedToolIndex = 0;
 		mSelectedToolType = -1;
 
-		label_stage = null;
-		ts_heart_num = null;
-		ts_star_num = null;
 		mStatusLayer = null;
 		mGameLayer = null;
 		mMenuLayer = null;
 		mResultLayer = null;
+		mStatusLayer = null;
 
 		mIsMenuShown = false;
 	}

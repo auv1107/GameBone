@@ -18,10 +18,13 @@ import android.widget.TextView;
 import com.Sct.gamebone.R;
 import com.Sct.gamebone.StageData;
 import com.Sct.gamebone.StageData.StageInfo;
+import com.Sct.gamebone.library.BitmapCache;
 import com.Sct.gamebone.library.SoundCache;
 
 public class MenuActivity extends BaseActivity implements OnClickListener {
 	private List<StageInfo> mStageList = null;
+	private ListView lv = null;
+	private MenuAdapter mAdapter = null;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,10 +32,18 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		setContentView(R.layout.activity_menu);
 		mStageList = StageData.getInstance().getStageList();
 
-		ListView lv = (ListView) findViewById(R.id.stage_list);
-		lv.setAdapter(new MenuAdapter(this));
+		lv = (ListView) findViewById(R.id.stage_list);
+		mAdapter = new MenuAdapter(this);
+		lv.setAdapter(mAdapter);
+	}
 
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 		SoundCache.PlayMusic("menu", true);
+		mStageList = StageData.getInstance().getStageList();
+		mAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -118,14 +129,9 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			ImageView v = null;
 			switch (info.state) {
 			case StageData.PASSED:
-				for (int i = 0; i < info.star; i++) {
-					v = new ImageView(MenuActivity.this);
-					v.setImageResource(R.drawable.star);
-					holder.menu_state.addView(v);
-					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-							0, LinearLayout.LayoutParams.MATCH_PARENT, 1);
-					v.setLayoutParams(lp);
-				}
+				v = new ImageView(MenuActivity.this);
+				v.setImageBitmap(BitmapCache.get("star" + info.star));
+				holder.menu_state.addView(v);
 				break;
 			case StageData.LOCKED:
 				v = new ImageView(MenuActivity.this);

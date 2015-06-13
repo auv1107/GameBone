@@ -12,6 +12,7 @@ public class Sprite extends BaseNode {
 	private Rect mSourceBound = null;
 	private int mSourceWidth = 0;
 	private int mSourceHeight = 0;
+	private int mRotation = 0;
 	private Paint mPaint = new Paint();
 
 	public Sprite() {
@@ -33,7 +34,10 @@ public class Sprite extends BaseNode {
 	@Override
 	public void onDraw(Canvas canvas) {
 		if (mBitmap != null) {
+			canvas.save();
+			canvas.rotate(mRotation, getCenterX(), getCenterY());
 			canvas.drawBitmap(mBitmap, mSourceBound, getDestBound(), mPaint);
+			canvas.restore();
 		}
 	}
 
@@ -73,5 +77,13 @@ public class Sprite extends BaseNode {
 	public void setAlpha(int alpha) {
 		// TODO Auto-generated method stub
 		mPaint.setAlpha(alpha);
+	}
+
+	public int getRotation() {
+		return mRotation;
+	}
+
+	public void setRotation(int rotation) {
+		this.mRotation = rotation;
 	}
 }
