@@ -200,6 +200,8 @@ public class CandyScene extends BaseGameEngine {
 	public void reset() {
 		super.reset();
 
+		info = null;
+		mCurrentLevel = 0;
 		heart_num = 0;
 		coin_num = 0;
 		cost_coin = 0;
@@ -211,8 +213,8 @@ public class CandyScene extends BaseGameEngine {
 		mGameLayer = null;
 		mMenuLayer = null;
 		mResultLayer = null;
-		mStatusLayer = null;
 
 		mIsMenuShown = false;
+		state = StageData.OPENING;
 	}
 }

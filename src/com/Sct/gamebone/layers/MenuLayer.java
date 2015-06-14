@@ -136,6 +136,7 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 		if (mRotateBtn.getDestBound().contains(x, y) && mRotateBtn.isVisible) {
 			Log.d("MenuLayer", "do rotate things");
 			mScene.rotateTool();
+			return true;
 		}
 		return false;
 	}

@@ -3,6 +3,9 @@ package com.Sct.gamebone;
 import com.Sct.gamebone.library.BitmapCache;
 import com.Sct.gamebone.tools.BaseTool;
 import com.Sct.gamebone.tools.BlueMirror;
+import com.Sct.gamebone.tools.DirectionLeader;
+import com.Sct.gamebone.tools.RedMirror;
+import com.Sct.gamebone.tools.Transporter;
 import com.Sct.gamebone.view.Sprite;
 
 public class ToolFactory {
@@ -24,6 +27,8 @@ public class ToolFactory {
 	public static int[] price = new int[] { 20, 30, 30, 20, 40, 50 };
 
 	public static int getPrice(int type) {
+		if (type == -1)
+			return 0;
 		return price[type];
 	}
 
@@ -44,19 +49,13 @@ public class ToolFactory {
 			t = new BlueMirror();
 			break;
 		case RED_MIRROR:
-			t.s = new Sprite(BitmapCache.get(RED_MIRROR_BITMAP));
-			t.price = 20;
-			t.type = RED_MIRROR;
+			t = new RedMirror();
 			break;
 		case DIRECTION_LEADER:
-			t.s = new Sprite(BitmapCache.get(DIRECTION_LEADER_BITMAP));
-			t.price = 20;
-			t.type = DIRECTION_LEADER;
+			t = new DirectionLeader();
 			break;
 		case TRANSPORTER:
-			t.s = new Sprite(BitmapCache.get(TRANSPORTER_BITMAP));
-			t.price = 20;
-			t.type = TRANSPORTER;
+			t = new Transporter();
 			break;
 		case NONE:
 			t.s = new Sprite(BitmapCache.get(LOCK_BITMAP));

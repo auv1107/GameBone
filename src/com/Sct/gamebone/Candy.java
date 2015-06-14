@@ -47,10 +47,10 @@ public class Candy {
 			long t = System.currentTimeMillis();
 			if (t - lastMoveTime >= this.delta) {
 				lastMoveTime = t;
-				int peerX = (int) (delta / 1000 * s.width * Math
-						.cos(mDirection));
-				int peerY = (int) (delta / 1000 * s.height * Math
-						.sin(mDirection));
+				int peerX = (int) (delta / 1000 * s.width * Math.cos(mDirection
+						* Math.PI / 180));
+				int peerY = (int) (delta / 1000 * s.width * Math.sin(mDirection
+						* Math.PI / 180));
 				s.x += mSpeed * peerX;
 				s.y += mSpeed * peerY;
 				if (mListener != null) {

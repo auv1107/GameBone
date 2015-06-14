@@ -11,7 +11,6 @@ import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.Sct.gamebone.Candy;
@@ -75,17 +74,17 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 			@Override
 			public void onCandyMoved(Candy c) {
 				// TODO Auto-generated method stub
-				for (int i = 0; i < mTool_layer.size(); i++) {
-					BaseTool t = mTool_layer.get(i);
-					if (t != null) {
-						if (t.has(c) && !t.contains(c, getRect(i))) {
-							t.lose(c);
-						}
-						if (!t.has(c) && t.contains(c, getRect(i))) {
-							t.get(c);
-						}
-					}
-				}
+				// for (int i = 0; i < mTool_layer.size(); i++) {
+				// BaseTool t = mTool_layer.get(i);
+				// if (t != null) {
+				// if (t.has(c) && !t.contains(c, getRect(i))) {
+				// t.lose(c);
+				// }
+				// if (!t.has(c) && t.contains(c, getRect(i))) {
+				// t.get(c);
+				// }
+				// }
+				// }
 			}
 		});
 
@@ -111,8 +110,17 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 			@Override
 			public void onCandyMoved(Candy c) {
 				// TODO Auto-generated method stub
-				Log.d("gamelayer", "lineto: " + (c.getX() + r.width() / 2)
-						+ ", " + (c.getY() + r.height() / 2));
+				if (!new Rect(0, 0, GameLayer.this.width, GameLayer.this.height)
+						.contains(c.getCenterX(), c.getCenterY())) {
+					c.stop();
+					return;
+				}
+				int id = getId(c.getX() + r.width() / 2, c.getY() + r.height()
+						/ 2);
+				if (id >= col * row) {
+					c.stop();
+					return;
+				}
 				mDetectPath.lineTo(c.getX() + r.width() / 2,
 						c.getY() + r.height() / 2);
 				if (!new Rect(0, 0, GameLayer.this.width, GameLayer.this.height)
@@ -130,8 +138,11 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 						}
 					}
 				}
+				if (mMap.obstacle_layer.get(id) != 0)
+					c.stop();
 				if (getRect(mMap.exit_pos).contains(c.getX() + r.width() / 2,
 						c.getY() + r.height() / 2)) {
+					c.stop();
 					mScene.pass();
 				}
 			}
@@ -204,7 +215,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	}
 
 	public void drawExit(Canvas canvas) {
-		mExitAnimation.onDraw(canvas);
+		// mExitAnimation.onDraw(canvas);
 	}
 
 	public void drawCandy(Canvas canvas) {
@@ -254,6 +265,10 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 					| 1 << MenuLayer.TOOL_ICON);
 		} else {
 			mScene.mSelectedToolType = mTool_layer.get(mDstId).type;
+			mScene.mStatusLayer.updateCurrentTool(ToolFactory
+					.getTool(mScene.mSelectedToolType).s);
+			mScene.mMenuLayer.setToolSprite(ToolFactory
+					.getTool(mScene.mSelectedToolType).s);
 			// 显示移动、移除按钮
 			Rect r = getRect(mDstId);
 			Point p = coordinateLayer2Screen(this, r.left, r.top);
@@ -296,6 +311,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 		BaseTool t = mTool_layer.get(mDstId);
 		if (t != null) {
 			t.rotate();
+			rebuildPath();
 		}
 	}
 

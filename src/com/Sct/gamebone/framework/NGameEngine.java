@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-import com.Sct.gamebone.R;
 import com.Sct.gamebone.framework.NGameData.TileObject;
 import com.Sct.gamebone.framework.NGameData.Tileset;
 import com.Sct.gamebone.library.BitmapCache;
@@ -48,7 +47,7 @@ public class NGameEngine extends BaseGameEngine {
 		mContext = context;
 		Tileset ts = new Tileset(960, 960, "light", 192, 192, "#000000");
 		TileCache.AddTileset(ts);
-		BitmapCache.put("ui1", R.drawable.ui1);
+		// BitmapCache.put("ui1", R.drawable.ui1);
 	}
 
 	public Context getContext() {

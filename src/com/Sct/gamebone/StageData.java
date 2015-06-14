@@ -15,6 +15,9 @@ public class StageData {
 	public static final int PASSED_BACKGROUND_DRAWABLE = R.drawable.blue_btn;
 	public static final int LOCKED_BACKGROUND_DRAWABLE = R.drawable.gray_btn;
 
+	public static final String NMAP1 = "maps/nmap1.tmx";
+	public static final String NMAP2 = "maps/nmap2.json";
+
 	public static final int MAX_HEART = 5;
 	public static final int HEART_RECOVERY_TIME = 60 * 60 * 1000;
 
@@ -51,19 +54,19 @@ public class StageData {
 
 	public StageData() {
 		loginTimes = getLoginTimes();
-		if (loginTimes == 0) {
-			initWhenTheFirstTime();
-		}
+		// if (loginTimes == 0) {
+		initWhenTheFirstTime();
+		// }
 		readFromPreferences();
 		GameApp.getApplication().putPreferenceInt("LoginTimes", ++loginTimes);
 	}
 
 	public void initWhenTheFirstTime() {
-		mList.add(new StageInfo(0, "关卡一", OPENING, 0, NGameData.NMAP1));
-		mList.add(new StageInfo(1, "关卡二", LOCKED, 0, NGameData.NMAP1));
-		mList.add(new StageInfo(2, "关卡三", LOCKED, 0, NGameData.NMAP1));
-		mList.add(new StageInfo(3, "关卡四", LOCKED, 0, NGameData.NMAP1));
-		mList.add(new StageInfo(4, "关卡五", LOCKED, 0, NGameData.NMAP1));
+		mList.add(new StageInfo(0, "关卡一", OPENING, 0, NMAP1));
+		mList.add(new StageInfo(1, "关卡二", LOCKED, 0, NMAP2));
+		mList.add(new StageInfo(2, "关卡三", LOCKED, 0, NMAP1));
+		mList.add(new StageInfo(3, "关卡四", LOCKED, 0, NMAP1));
+		mList.add(new StageInfo(4, "关卡五", LOCKED, 0, NMAP1));
 
 		GameApp app = GameApp.getApplication();
 		app.putPreferenceInt("total_stage", mList.size());
