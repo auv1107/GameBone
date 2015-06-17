@@ -20,6 +20,7 @@ public class GameEntry {
 		// prepare some resources for game
 		prepareImages();
 		prepareMusic();
+		GameApp.getApplication().prepareString();
 	}
 
 	public void run() {
@@ -53,6 +54,6 @@ public class GameEntry {
 		SoundCache.AddMusic("downfall30", R.raw.downfall30);
 		SoundCache.AddAudio("ensure003", R.raw.ensure003);
 		SoundCache.AddAudio("cancel001", R.raw.cancel001);
-		SoundCache.AddAudio("follow06", R.raw.follow06);
+		// SoundCache.AddAudio("follow06", R.raw.follow06);
 	}
 }

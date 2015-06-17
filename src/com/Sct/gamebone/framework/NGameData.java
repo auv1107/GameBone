@@ -193,7 +193,7 @@ public class NGameData {
 			this.from = CONSTRUCTOR;
 			this.imageheight = imageheight;
 			this.imagewidth = imagewidth;
-			this.name = name;
+			this.name = name.toLowerCase();
 			this.tileheight = tileheight;
 			this.tilewidth = tilewidth;
 			this.transparentcolor = transparentcolor;
@@ -239,10 +239,10 @@ public class NGameData {
 				from = JSON;
 				imageheight = json.getInt("imageheight");
 				imagewidth = json.getInt("imagewidth");
-				name = json.getString("name");
+				name = json.getString("name").toLowerCase();
 				tileheight = json.getInt("tileheight");
 				tilewidth = json.getInt("tilewidth");
-				image = json.getString("image");
+				image = json.getString("image").toLowerCase();
 				firstgid = json.getInt("firstgid");
 				if (json.has("transparentcolor"))
 					transparentcolor = json.getString("transparentcolor");

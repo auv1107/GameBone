@@ -31,7 +31,8 @@ public class Candy {
 		mGameLayer = l;
 		this.s.width = mGameLayer.width / mGameLayer.col;
 		this.s.height = mGameLayer.height / mGameLayer.row;
-
+		s.anchorX = 0.5f;
+		s.anchorY = 0.5f;
 	}
 
 	public void enter(BaseTool t) {
@@ -86,6 +87,14 @@ public class Candy {
 		return s.y;
 	}
 
+	public void setRealX(int x) {
+		s.x = (int) (x + s.width * s.anchorX);
+	}
+
+	public void setRealY(int y) {
+		s.y = (int) (y + s.height * s.anchorY);
+	}
+
 	public Candy setX(int x) {
 		s.x = x;
 		return this;
@@ -137,6 +146,16 @@ public class Candy {
 
 	public int getCenterY() {
 		return s.getCenterY();
+	}
+
+	public void setCenterX(int x) {
+		s.x = (int) (x - (s.anchorX - 0.5) * s.width);
+		s.x = x;
+	}
+
+	public void setCenterY(int y) {
+		s.y = (int) (y - (s.anchorY - 0.5) * s.height);
+		s.y = y;
 	}
 
 }

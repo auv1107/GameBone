@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.Sct.gamebone.CandyScene;
 import com.Sct.gamebone.ToolFactory;
-import com.Sct.gamebone.library.TileCache;
 import com.Sct.gamebone.view.BaseLayer;
 import com.Sct.gamebone.view.BaseLayer.onTouchListener;
 import com.Sct.gamebone.view.Sprite;
@@ -35,9 +34,8 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 		mOkBtn = new Sprite("btn_ok");
 		mRemoveBtn = new Sprite("btn_remove");
 		mMoveBtn = new Sprite("btn_move");
-		mRotateBtn = new Sprite(
-				TileCache.get(TileCache.getFirstGid("tilea5") + 1));
-		mToolIcon = ToolFactory.getTool(mScene.mSelectedToolType).s;
+		mRotateBtn = new Sprite("btn_rotate");
+		mToolIcon = ToolFactory.getTool(mScene.mSelectedToolType).getIcon();
 
 		mOkBtn.x = 0;
 		mOkBtn.y = height * 2 / 3;
@@ -48,8 +46,6 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 		mRotateBtn.x = 0;
 		mRotateBtn.y = height * 2 / 3;
 		mRotateBtn.anchorY = 1.0f;
-		mRotateBtn.width = 64;
-		mRotateBtn.height = 64;
 
 		mRemoveBtn.x = width;
 		mRemoveBtn.y = height * 2 / 3;
@@ -78,11 +74,19 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 
 		setOnTouchListener(this);
 		isSwallow = true;
+		hide();
 	}
 
 	public void hide() {
 		isVisible = false;
 		setOnTouchListener(null);
+	}
+
+	@Override
+	public void enter() {
+		// TODO Auto-generated method stub
+		super.enter();
+		isVisible = false;
 	}
 
 	public void show() {
@@ -100,6 +104,7 @@ public class MenuLayer extends BaseLayer implements onTouchListener {
 
 	public void setToolSprite(Sprite s) {
 		mToolIcon.setBitmap(s);
+		mToolIcon.setRotation(s.getRotation());
 	}
 
 	@Override

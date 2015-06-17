@@ -23,7 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:shadowColor="#ff000000"
         android:shadowDx="2"
         android:shadowDy="3"

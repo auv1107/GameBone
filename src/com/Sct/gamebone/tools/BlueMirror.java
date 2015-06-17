@@ -12,6 +12,9 @@ public class BlueMirror extends BaseTool {
 		s = new Sprite(BitmapCache.get(ToolFactory.BLUE_MIRROR_BITMAP));
 		price = ToolFactory.getPrice(ToolFactory.BLUE_MIRROR);
 		type = ToolFactory.BLUE_MIRROR;
+		icon = new Sprite(ToolFactory.BLUE_MIRROR_ICON);
+		icon.anchorX = 0.5f;
+		icon.anchorY = 1.0f;
 	}
 
 	@Override

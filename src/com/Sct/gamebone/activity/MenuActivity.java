@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +27,10 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 	private List<StageInfo> mStageList = null;
 	private ListView lv = null;
 	private MenuAdapter mAdapter = null;
+	private TextView tvCoin = null;
+	private TextView tvHeart = null;
+	private ImageView ivBackBtn = null;
+	private ImageView ivHelpBtn = null;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,6 +41,16 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		lv = (ListView) findViewById(R.id.stage_list);
 		mAdapter = new MenuAdapter(this);
 		lv.setAdapter(mAdapter);
+
+		tvCoin = (TextView) findViewById(R.id.tvCoin);
+		tvHeart = (TextView) findViewById(R.id.tvHeart);
+
+		ivBackBtn = (ImageView) findViewById(R.id.iv_backbtn);
+		ivHelpBtn = (ImageView) findViewById(R.id.iv_helpbtn);
+		ivBackBtn.setId(-3);
+		ivHelpBtn.setId(-2);
+		ivBackBtn.setOnClickListener(this);
+		ivHelpBtn.setOnClickListener(this);
 	}
 
 	@Override
@@ -44,30 +60,54 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		SoundCache.PlayMusic("menu", true);
 		mStageList = StageData.getInstance().getStageList();
 		mAdapter.notifyDataSetChanged();
+		lv.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parentView, View v,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				SoundCache.PlayAudio("click");
+				if (mStageList.get(position).state == StageData.PASSED) {
+					EnterGame(position);
+
+				}
+			}
+		});
+		tvCoin.setText(StageData.getInstance().coin_num + "");
+		tvHeart.setText(StageData.getInstance().heart_num + "");
+	}
+
+	public void EnterGame(int id) {
+		Intent intent = new Intent();
+		StageData.getInstance().setCurrentLevel(id);
+		intent.setClass(this, GameActivity.class);
+		startActivity(intent);
 	}
 
 	@Override
 	public void onClick(View v) {
+
+		SoundCache.StopMusic("menu");
+		SoundCache.PlayAudio("click");
+
 		Intent intent = new Intent();
 		switch (v.getId()) {
 		// Rewrite here
 		case -1:
 			intent.setClass(this, SetupActivity.class);
+			startActivity(intent);
 			break;
 		case -2:
 			intent.setClass(this, HelpActivity.class);
+			startActivity(intent);
 		case -3:
-			killApp();
+			dialog();
+			// killApp();
 			break;
 		default:
-			StageData.getInstance().setCurrentLevel(v.getId());
-			intent.setClass(this, GameActivity.class);
+			EnterGame(v.getId());
 			break;
 		}
-
-		SoundCache.StopMusic("menu");
-		SoundCache.PlayAudio("click");
-		startActivity(intent);
 	}
 
 	@Override

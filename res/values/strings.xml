@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">GameBone</string>
+    <string name="app_name">回收糖果</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="status_area">这里是状态区，展示当前关卡、剩余心的数量和本关可用金币的数量。心每小时恢复1颗，过关所剩的金币数量将累加到自己的总金币中。</string>
+    <string name="detect_line">这条不断前进的虚线代表糖果的前进轨迹，引导虚线到达终点，即可获得游戏胜利。</string>
+    <string name="entry">糖果从这里进入</string>
+    <string name="exit">从这里离开</string>
+    <string name="obstacle">这些障碍物是不可通过的位置，目标碰到障碍物会停止前进。</string>
+    <string name="tools">此处展示本关卡的可用道具，不同的道具会对糖果前进的 方向 或 位置 产生不同的影响。</string>
+    <string name="price">这里是每个道具的价格</string>
+    <string name="current_tool">此处展示当前选中的道具</string>
+    <string name="mission">您已经完成了学习任务。为了让糖果到达终点,利用手中的道具，摸索着完成接下来任务吧！</string>
+    <string name="introduce1">   来自阿尔卑斯山的管理员在工作时睡着了。阿尔卑斯软糖开始大量泄露,为了将软糖回收,最大程度的降低损失,我们需要帮助管理员将流失的软糖们进行回收。</string>
+    <string name="introduce2">   根据可靠情报,软糖们在离开阿尔卑斯山后,会向着同一方向一直前进,并且已经走出了很远。然而好消息是,我们的管理员拥有让软糖们改变前进方向的道具,利用这些道具,帮助管理员收回可口美味的糖果吧。</string>
 
 </resources>

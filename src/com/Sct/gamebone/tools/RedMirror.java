@@ -13,6 +13,9 @@ public class RedMirror extends BaseTool {
 		s = new Sprite(BitmapCache.get(ToolFactory.RED_MIRROR_BITMAP));
 		type = ToolFactory.RED_MIRROR;
 		price = ToolFactory.getPrice(ToolFactory.RED_MIRROR);
+		icon = new Sprite(ToolFactory.RED_MIRROR_ICON);
+		icon.anchorX = 0.5f;
+		icon.anchorY = 1.0f;
 	}
 
 	@Override

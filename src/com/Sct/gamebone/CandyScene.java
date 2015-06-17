@@ -11,6 +11,7 @@ import com.Sct.gamebone.layers.GameLayer;
 import com.Sct.gamebone.layers.MenuLayer;
 import com.Sct.gamebone.layers.ResultLayer;
 import com.Sct.gamebone.layers.StatusLayer;
+import com.Sct.gamebone.layers.TeachLayer;
 import com.Sct.gamebone.library.SoundCache;
 import com.Sct.gamebone.view.BaseLayer;
 import com.Sct.gamebone.view.Sprite;
@@ -31,7 +32,7 @@ public class CandyScene extends BaseGameEngine {
 	public ResultLayer mResultLayer = null;
 	public StatusLayer mStatusLayer = null;
 
-	public int state = StageData.OPENING;
+	public int state = 0;
 
 	public boolean mIsMenuShown = false;
 
@@ -41,9 +42,11 @@ public class CandyScene extends BaseGameEngine {
 		super.initGame();
 		// 获取本关游戏数据
 		mCurrentLevel = StageData.getInstance().getCurrentLevel();
+		state = StageData.getInstance().getStageList().get(mCurrentLevel).state;
+
 		info = StageData.getInstance().getMapInfo();
 		heart_num = StageData.getInstance().heart_num;
-		coin_num = StageData.getInstance().coin_num;
+		coin_num = info.sum_coin;
 		mSelectedToolType = info.tools_list[0];
 
 		BaseLayer l = new BaseLayer();
@@ -62,7 +65,14 @@ public class CandyScene extends BaseGameEngine {
 		showGrid();
 
 		mMenuLayer = new MenuLayer(this);
+		mMenuLayer.isVisible = false;
 		addChild(mMenuLayer);
+
+		if (mCurrentLevel == 0 && state == StageData.OPENING) {
+			TeachLayer tl = new TeachLayer(this);
+			tl.initLayer();
+			addChild(tl);
+		}
 	}
 
 	@Override
@@ -162,7 +172,9 @@ public class CandyScene extends BaseGameEngine {
 	public void pass() {
 		Log.d("candyscene", "passed");
 		state = StageData.PASSED;
-		int star = EvaluationSystem.evaluate(mCurrentLevel, cost_coin, 0);
+		int star = EvaluationSystem.evaluate(mCurrentLevel, coin_num, 0);
+		if (coin_num < 0)
+			heart_num--;
 		writeDataToPreference();
 		mResultLayer = new ResultLayer(this, state, star);
 		mResultLayer.initLayer();
@@ -173,7 +185,7 @@ public class CandyScene extends BaseGameEngine {
 		int star = EvaluationSystem.evaluate(mCurrentLevel, cost_coin, 0);
 		StageData.getInstance().updateStageInfo(mCurrentLevel, state, star);
 		StageData.getInstance().openNextState();
-		StageData.getInstance().coin_num = coin_num;
+		StageData.getInstance().coin_num += coin_num;
 		StageData.getInstance().heart_num = heart_num;
 		StageData.getInstance().writeToPreferences();
 	}
@@ -215,6 +227,7 @@ public class CandyScene extends BaseGameEngine {
 		mResultLayer = null;
 
 		mIsMenuShown = false;
-		state = StageData.OPENING;
+		state = StageData.getInstance().getStageList()
+				.get(StageData.getInstance().getCurrentLevel()).state;
 	}
 }

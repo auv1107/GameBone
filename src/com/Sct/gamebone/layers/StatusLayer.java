@@ -66,11 +66,9 @@ public class StatusLayer extends BaseLayer {
 		for (int i = 0; i < 4; i++) {
 			// add tool
 			BaseTool t = ToolFactory.getTool(mScene.info.tools_list[i]);
-			t.s.anchorX = 0.5f;
-			t.s.anchorY = 1f;
-			t.s.x = mToolsPos[i].x;
-			t.s.y = mToolsPos[i].y;
-			addChild(t.s);
+			t.setX(mToolsPos[i].x);
+			t.setY(mToolsPos[i].y);
+			addChild(t.getIcon());
 
 			// add price
 			TextSprite price = new TextSprite(""
@@ -81,7 +79,8 @@ public class StatusLayer extends BaseLayer {
 			price.setTextColor(Color.WHITE);
 			addChild(price);
 		}
-		updateCurrentTool(ToolFactory.getTool(mScene.mSelectedToolType).s);
+		updateCurrentTool(ToolFactory.getTool(mScene.mSelectedToolType)
+				.getIcon());
 
 		label_stage = new TextSprite(StageData.getInstance().getStageName());
 		label_stage.setTextColor(Color.WHITE);
@@ -119,10 +118,11 @@ public class StatusLayer extends BaseLayer {
 							continue;
 						if (x > mToolsPos[i].x && x < mToolsPos[i].x + 110) {
 							mScene.mSelectedToolType = mScene.info.tools_list[i];
-							updateCurrentTool(ToolFactory
-									.getTool(mScene.mSelectedToolType).s);
+							updateCurrentTool(ToolFactory.getTool(
+									mScene.mSelectedToolType).getIcon());
 							mScene.mMenuLayer.setToolSprite(ToolFactory
-									.getTool(mScene.mSelectedToolType).s);
+									.getTool(mScene.mSelectedToolType)
+									.getIcon());
 							return true;
 						}
 					}

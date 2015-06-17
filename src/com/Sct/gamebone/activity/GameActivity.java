@@ -1,8 +1,8 @@
 package com.Sct.gamebone.activity;
 
-import com.Sct.gamebone.framework.GameView;
-
 import android.os.Bundle;
+
+import com.Sct.gamebone.framework.GameView;
 
 public class GameActivity extends BaseActivity implements GameView.Callback {
 
@@ -19,5 +19,4 @@ public class GameActivity extends BaseActivity implements GameView.Callback {
 		// TODO Auto-generated method stub
 		finish();
 	}
-
 }

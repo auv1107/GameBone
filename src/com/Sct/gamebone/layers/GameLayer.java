@@ -6,12 +6,12 @@ import java.util.List;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.widget.Toast;
 
 import com.Sct.gamebone.Candy;
 import com.Sct.gamebone.Candy.onCandyMovedListener;
@@ -37,23 +37,37 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 
 	private int mDstId = -1;
 
+	private List<Rect> mGridRects = new ArrayList<Rect>();
+	private Rect mGameArea = null;
+
 	private FrameAnimation mExitAnimation = null;
 	private Candy mCandy = null;
 
 	private Path mDetectPath = null;
 	private Candy mDetectCandy = null;
 	private Paint mDetectPaint = null;
+	private DashPathEffect mDashPathEffect = null;
 
 	public GameLayer(CandyScene scene) {
 		mScene = scene;
 		width = 1024;
 		height = 1536;
+		mGameArea = new Rect(0, 0, width, height);
 		row = mScene.info.row;
 		col = mScene.info.col;
 		mMap = mScene.info;
 		setOnTouchListener(this);
 		mTool_layer = new ArrayList<BaseTool>(Collections.nCopies(row * col,
 				(BaseTool) null));
+
+		int pWidth = width / col;
+		int pHeight = height / row;
+		for (int i = 0; i < col * row; i++) {
+			int c = i % col;
+			int r = i / col;
+			mGridRects.add(new Rect(c * pWidth, r * pHeight, c * pWidth
+					+ pWidth, r * pHeight + pHeight));
+		}
 
 		int firstgid = TileCache.getFirstGid("light");
 		Rect dst = getRect(mMap.exit_pos);
@@ -66,98 +80,86 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 
 		mCandy = new Candy(this, new Sprite("game_candy1"));
 		final Rect r = getRect(mMap.entry_pos);
-		mCandy.setX(r.left);
-		mCandy.setY(r.top);
-		mCandy.setSpeed(3);
-		mCandy.setOnCandyMovedListener(new onCandyMovedListener() {
-
-			@Override
-			public void onCandyMoved(Candy c) {
-				// TODO Auto-generated method stub
-				// for (int i = 0; i < mTool_layer.size(); i++) {
-				// BaseTool t = mTool_layer.get(i);
-				// if (t != null) {
-				// if (t.has(c) && !t.contains(c, getRect(i))) {
-				// t.lose(c);
-				// }
-				// if (!t.has(c) && t.contains(c, getRect(i))) {
-				// t.get(c);
-				// }
-				// }
-				// }
-			}
-		});
+		mCandy.setRealX(r.left);
+		mCandy.setRealY(r.top);
 
 		mDetectPath = new Path();
-		mDetectPath.moveTo(r.left + r.width() / 2, r.top + r.height() / 2);
-		Toast.makeText(
-				GameApp.getApplication(),
-				"r: " + dst.left + ", " + dst.top + ", " + dst.width() + ", "
-						+ dst.height(), Toast.LENGTH_LONG).show();
+		mDetectPath.moveTo(r.centerX(), r.centerY());
+		mDashPathEffect = new DashPathEffect(new float[] { 30, 10 }, 10);
 
 		mDetectPaint = new Paint();
 		mDetectPaint.setAntiAlias(true); // 设置画笔为无锯齿
-		mDetectPaint.setColor(Color.BLACK); // 设置画笔颜色
-		mDetectPaint.setStrokeWidth((float) 3.0); // 线宽
+		mDetectPaint.setColor(Color.rgb(0xCC, 0x33, 0x00)); // 设置画笔颜色
+		mDetectPaint.setStrokeWidth((float) 10.0); // 线宽
 		mDetectPaint.setStyle(Style.STROKE);
+		mDetectPaint.setPathEffect(mDashPathEffect);
 
 		mDetectCandy = new Candy(this, new Sprite("game_candy1"));
-		mDetectCandy.setX(r.left);
-		mDetectCandy.setY(r.top);
-		mDetectCandy.setSpeed(5);
+		mDetectCandy.setRealX(r.left);
+		mDetectCandy.setRealY(r.top);
+		mDetectCandy.setSpeed(6);
+		mDetectCandy.setDelta(80);
+		mDetectCandy.setDirection(mScene.info.direction);
 		mDetectCandy.setOnCandyMovedListener(new onCandyMovedListener() {
 
 			@Override
 			public void onCandyMoved(Candy c) {
 				// TODO Auto-generated method stub
-				if (!new Rect(0, 0, GameLayer.this.width, GameLayer.this.height)
-						.contains(c.getCenterX(), c.getCenterY())) {
+				// 若在范围内，获取id
+				if (!mGameArea.contains(c.getCenterX(), c.getCenterY())) {
 					c.stop();
 					return;
 				}
-				int id = getId(c.getX() + r.width() / 2, c.getY() + r.height()
-						/ 2);
-				if (id >= col * row) {
-					c.stop();
-					return;
-				}
-				mDetectPath.lineTo(c.getX() + r.width() / 2,
-						c.getY() + r.height() / 2);
-				if (!new Rect(0, 0, GameLayer.this.width, GameLayer.this.height)
-						.contains(c.getX(), c.getY())) {
-					c.stop();
-				}
-				for (int i = 0; i < mTool_layer.size(); i++) {
+				int id = getId(c.getCenterX(), c.getCenterY());
+
+				// 判断是否在道具上
+				for (int i = 0; i < mGridRects.size(); i++) {
 					BaseTool t = mTool_layer.get(i);
 					if (t != null) {
-						if (t.has(c) && !t.contains(c, getRect(i))) {
+						if (t.has(c) && !t.contains(c, mGridRects.get(i))) {
 							t.lose(c);
 						}
-						if (!t.has(c) && t.contains(c, getRect(i))) {
+						if (!t.has(c) && t.contains(c, mGridRects.get(i))) {
+							c.setX(getRect(i).centerX());
+							c.setY(getRect(i).centerY());
+							mDetectPath.lineTo(c.getCenterX(), c.getCenterY());
 							t.get(c);
 						}
 					}
 				}
-				if (mMap.obstacle_layer.get(id) != 0)
+				// 判断是否在障碍物上
+				if (mMap.obstacle_layer.get(id) != 0) {
 					c.stop();
-				if (getRect(mMap.exit_pos).contains(c.getX() + r.width() / 2,
-						c.getY() + r.height() / 2)) {
-					c.stop();
-					mScene.pass();
+					return;
 				}
+				// 是否在出口上
+				if (getRect(mMap.exit_pos).contains(c.getCenterX(),
+						c.getCenterY())) {
+					c.stop();
+					// startCandy();
+					mScene.pass();
+					return;
+				}
+				// 划线
+				mDetectPath.lineTo(c.getCenterX(), c.getCenterY());
 			}
 		});
 	}
 
+	public void startCandy() {
+		mCandy.start();
+	}
+
 	@Override
 	public void enter() {
-		mCandy.start();
+		super.enter();
+		// mCandy.start();
 		mDetectCandy.start();
 	}
 
 	@Override
 	public void exit() {
-		mCandy.stop();
+		// mCandy.stop();
 		mDetectCandy.stop();
 	}
 
@@ -188,7 +190,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 
 	public void drawBackground(Canvas canvas) {
 		List<Integer> l = mMap.bg_layer;
-		for (int i = 0; i < l.size(); i++) {
+		for (int i = 0; i < row * col; i++) {
 			Rect dst = getRect(i);
 			TileCache.Draw(canvas, l.get(i), dst, GameApp.getApplication()
 					.getTempPaint());
@@ -207,7 +209,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	public void drawTools(Canvas canvas) {
 		for (BaseTool t : mTool_layer) {
 			if (t != null)
-				t.s.onDraw(canvas);
+				t.onDraw(canvas);
 		}
 	}
 
@@ -223,12 +225,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	}
 
 	public Rect getRect(int id) {
-		int pWidth = width / col;
-		int pHeight = height / row;
-		int c = id % col;
-		int r = id / col;
-		return new Rect(c * pWidth, r * pHeight, c * pWidth + pWidth, r
-				* pHeight + pHeight);
+		return mGridRects.get(id);
 	}
 
 	public int getId(float x, float y) {
@@ -265,10 +262,10 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 					| 1 << MenuLayer.TOOL_ICON);
 		} else {
 			mScene.mSelectedToolType = mTool_layer.get(mDstId).type;
-			mScene.mStatusLayer.updateCurrentTool(ToolFactory
-					.getTool(mScene.mSelectedToolType).s);
-			mScene.mMenuLayer.setToolSprite(ToolFactory
-					.getTool(mScene.mSelectedToolType).s);
+			mScene.mStatusLayer.updateCurrentTool(ToolFactory.getTool(
+					mScene.mSelectedToolType).getIcon());
+			mScene.mMenuLayer.setToolSprite(ToolFactory.getTool(
+					mScene.mSelectedToolType).getIcon());
 			// 显示移动、移除按钮
 			Rect r = getRect(mDstId);
 			Point p = coordinateLayer2Screen(this, r.left, r.top);
@@ -284,8 +281,8 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 			return;
 		BaseTool t = ToolFactory.getTool(tooltype);
 		Rect r = getRect(mDstId);
-		t.s.x = r.left;
-		t.s.y = r.top;
+		t.setX(r.left);
+		t.setY(r.top);
 		mTool_layer.set(mDstId, t);
 		mDstId = -1;
 
@@ -316,15 +313,23 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	}
 
 	public void rebuildPath() {
-		SoundCache.PlayAudio("follow06");
+		// SoundCache.PlayAudio("follow06");
 		mDetectCandy.stop();
 		mDetectPath.reset();
-		final Rect r = getRect(mMap.entry_pos);
-		mDetectPath.moveTo(r.left + r.width() / 2, r.top + r.height() / 2);
-		mDetectCandy.setX(r.left);
-		mDetectCandy.setY(r.top);
+		Rect r = getRect(mMap.entry_pos);
+		mDetectPath.moveTo(r.centerX(), r.centerY());
+		mDetectCandy.setRealX(r.left);
+		mDetectCandy.setRealY(r.top);
 		mDetectCandy.setSpeed(13);
-		mDetectCandy.setDirection(0);
+		mDetectCandy.setDirection(mScene.info.direction);
 		mDetectCandy.start();
+	}
+
+	public void startDetectCandy() {
+		mDetectCandy.start();
+	}
+
+	public void stopDetectCandy() {
+		mDetectCandy.stop();
 	}
 }

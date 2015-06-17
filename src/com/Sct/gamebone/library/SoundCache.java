@@ -45,7 +45,7 @@ public class SoundCache {
 		MediaPlayer mp = mMusicMap.get(key);
 		if (mp != null) {
 			mp.setLooping(loop);
-			mp.seekTo(0);
+			// mp.seekTo(0);
 			mp.start();
 		}
 	}

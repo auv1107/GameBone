@@ -22,6 +22,8 @@ public class TileCache {
 	private static List<Tileset> tilesets = new ArrayList<Tileset>();
 
 	public static void AddTileset(Tileset ts) {
+		if (bitmap.containsKey(ts.getName()))
+			return;
 		Context context = GameApp.getApplication();
 		int resId = context.getResources().getIdentifier(ts.getName(),
 				"drawable", context.getPackageName());

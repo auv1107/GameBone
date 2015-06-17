@@ -15,8 +15,11 @@ public class StageData {
 	public static final int PASSED_BACKGROUND_DRAWABLE = R.drawable.blue_btn;
 	public static final int LOCKED_BACKGROUND_DRAWABLE = R.drawable.gray_btn;
 
-	public static final String NMAP1 = "maps/nmap1.tmx";
+	public static final String MAP_TEACH = "maps/nmap1.json";
+	public static final String NMAP1 = "maps/teach.json";
 	public static final String NMAP2 = "maps/nmap2.json";
+	public static final String NMAP3 = "maps/nmap3.json";
+	public static final String NMAP4 = "maps/nmap4.json";
 
 	public static final int MAX_HEART = 5;
 	public static final int HEART_RECOVERY_TIME = 60 * 60 * 1000;
@@ -45,7 +48,8 @@ public class StageData {
 
 	public void openNextState() {
 		if (mCurrentLevel != mList.size() - 1) {
-			mList.get(mCurrentLevel + 1).state = OPENING;
+			if (mList.get(mCurrentLevel + 1).state == LOCKED)
+				mList.get(mCurrentLevel + 1).state = OPENING;
 		}
 	}
 
@@ -54,19 +58,21 @@ public class StageData {
 
 	public StageData() {
 		loginTimes = getLoginTimes();
-		// if (loginTimes == 0) {
-		initWhenTheFirstTime();
-		// }
+		if (loginTimes == 0) {
+			initWhenTheFirstTime();
+		}
 		readFromPreferences();
 		GameApp.getApplication().putPreferenceInt("LoginTimes", ++loginTimes);
 	}
 
 	public void initWhenTheFirstTime() {
-		mList.add(new StageInfo(0, "关卡一", OPENING, 0, NMAP1));
+		mList.add(new StageInfo(0, "教学关卡", OPENING, 0, MAP_TEACH));
+		mList.add(new StageInfo(6, "关卡一", LOCKED, 0, NMAP1));
 		mList.add(new StageInfo(1, "关卡二", LOCKED, 0, NMAP2));
-		mList.add(new StageInfo(2, "关卡三", LOCKED, 0, NMAP1));
-		mList.add(new StageInfo(3, "关卡四", LOCKED, 0, NMAP1));
+		mList.add(new StageInfo(2, "关卡三", LOCKED, 0, NMAP3));
+		mList.add(new StageInfo(3, "关卡四", LOCKED, 0, NMAP4));
 		mList.add(new StageInfo(4, "关卡五", LOCKED, 0, NMAP1));
+		mList.add(new StageInfo(5, "关卡六", LOCKED, 0, NMAP1));
 
 		GameApp app = GameApp.getApplication();
 		app.putPreferenceInt("total_stage", mList.size());
@@ -189,6 +195,10 @@ public class StageData {
 		public int col = 0;
 		public int entry_pos = 0;
 		public int exit_pos = 0;
+		public int direction = 0;
+		public int sum_coin = 0;
+		public int star3 = 0;
+		public int star2 = 0;
 
 		public MapInfo(String mapname) {
 			data = NGameData.readFromFile(mapname);
@@ -214,6 +224,12 @@ public class StageData {
 
 			TileObject o_entry = data.getTileObject("entry");
 			entry_pos = Integer.parseInt(o_entry.properties.get("pos"));
+			direction = Integer.parseInt(o_entry.properties.get("direction"));
+
+			TileObject o_datas = data.getTileObject("datas");
+			sum_coin = Integer.parseInt(o_datas.properties.get("sum_coin"));
+			star3 = Integer.parseInt(o_datas.properties.get("star3"));
+			star2 = Integer.parseInt(o_datas.properties.get("star2"));
 		}
 	}
 }

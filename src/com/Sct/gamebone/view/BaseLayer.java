@@ -27,7 +27,6 @@ public class BaseLayer extends BaseNode {
 	}
 
 	public void enter() {
-
 	}
 
 	public void exit() {
