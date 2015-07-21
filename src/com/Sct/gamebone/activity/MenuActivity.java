@@ -47,8 +47,10 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 
 		ivBackBtn = (ImageView) findViewById(R.id.iv_backbtn);
 		ivHelpBtn = (ImageView) findViewById(R.id.iv_helpbtn);
+
 		ivBackBtn.setId(-3);
 		ivHelpBtn.setId(-2);
+
 		ivBackBtn.setOnClickListener(this);
 		ivHelpBtn.setOnClickListener(this);
 	}
@@ -100,6 +102,7 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		case -2:
 			intent.setClass(this, HelpActivity.class);
 			startActivity(intent);
+			break;
 		case -3:
 			dialog();
 			// killApp();

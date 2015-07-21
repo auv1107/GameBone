@@ -14,6 +14,7 @@ public class Sprite extends BaseNode {
 	private int mSourceHeight = 0;
 	private int mRotation = 0;
 	private Paint mPaint = new Paint();
+	private Rect r = new Rect();
 
 	public Sprite() {
 	}
@@ -58,8 +59,9 @@ public class Sprite extends BaseNode {
 	}
 
 	public Rect getDestBound() {
-		return new Rect(getRealX(), getRealY(), getRealX() + width, getRealY()
+		r.set(getRealX(), getRealY(), getRealX() + width, getRealY()
 				+ height);
+		return r;
 	}
 
 	public Rect getSourceBound() {

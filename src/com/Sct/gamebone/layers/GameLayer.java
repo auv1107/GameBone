@@ -40,8 +40,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	private List<Rect> mGridRects = new ArrayList<Rect>();
 	private Rect mGameArea = null;
 
-	private FrameAnimation mExitAnimation = null;
-	private Candy mCandy = null;
+	private FrameAnimation mCandyAnimation = null;
 
 	private Path mDetectPath = null;
 	private Candy mDetectCandy = null;
@@ -69,19 +68,20 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 					+ pWidth, r * pHeight + pHeight));
 		}
 
-		int firstgid = TileCache.getFirstGid("light");
-		Rect dst = getRect(mMap.exit_pos);
-		mExitAnimation = new FrameAnimation();
-		for (int i = 4; i < 14; i++)
-			mExitAnimation.addFrame(TileCache.get(firstgid + i));
-		mExitAnimation.x = dst.left;
-		mExitAnimation.y = dst.top;
-		mExitAnimation.start();
-
-		mCandy = new Candy(this, new Sprite("game_candy1"));
-		final Rect r = getRect(mMap.entry_pos);
-		mCandy.setRealX(r.left);
-		mCandy.setRealY(r.top);
+		Rect r = getRect(mMap.entry_pos);
+		mCandyAnimation = new FrameAnimation();
+		for (int i = 0; i < 10; i++) {
+			Sprite s = new Sprite("ld_candy");
+			s.setRotation(i * 36);
+			s.width = width / col;
+			s.height = height / row;
+			mCandyAnimation.addFrame(s);
+		}
+		mCandyAnimation.setDuration(1000);
+		mCandyAnimation.x = r.left;
+		mCandyAnimation.y = r.top;
+		mCandyAnimation.anchorX = 0.5f;
+		mCandyAnimation.anchorY = 0.5f;
 
 		mDetectPath = new Path();
 		mDetectPath.moveTo(r.centerX(), r.centerY());
@@ -97,8 +97,8 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 		mDetectCandy = new Candy(this, new Sprite("game_candy1"));
 		mDetectCandy.setRealX(r.left);
 		mDetectCandy.setRealY(r.top);
-		mDetectCandy.setSpeed(6);
-		mDetectCandy.setDelta(80);
+		mDetectCandy.setSpeed(9);
+		mDetectCandy.setDelta(50);
 		mDetectCandy.setDirection(mScene.info.direction);
 		mDetectCandy.setOnCandyMovedListener(new onCandyMovedListener() {
 
@@ -136,7 +136,6 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 				if (getRect(mMap.exit_pos).contains(c.getCenterX(),
 						c.getCenterY())) {
 					c.stop();
-					// startCandy();
 					mScene.pass();
 					return;
 				}
@@ -147,7 +146,6 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	}
 
 	public void startCandy() {
-		mCandy.start();
 	}
 
 	@Override
@@ -155,6 +153,7 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 		super.enter();
 		// mCandy.start();
 		mDetectCandy.start();
+		mCandyAnimation.start();
 	}
 
 	@Override
@@ -178,9 +177,10 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	public void update(float delta) {
 		// TODO Auto-generated method stub
 		super.update(delta);
-		mExitAnimation.update(delta);
-		mCandy.update(delta);
+		// mExitAnimation.update(delta);
+		// mCandy.update(delta);
 		mDetectCandy.update(delta);
+		mCandyAnimation.update(delta);
 	}
 
 	public void drawDetectPath(Canvas canvas) {
@@ -221,7 +221,8 @@ public class GameLayer extends BaseLayer implements onTouchListener {
 	}
 
 	public void drawCandy(Canvas canvas) {
-		mCandy.onDraw(canvas);
+		// mCandy.onDraw(canvas);
+		mCandyAnimation.onDraw(canvas);
 	}
 
 	public Rect getRect(int id) {

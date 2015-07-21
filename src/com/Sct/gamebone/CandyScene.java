@@ -68,7 +68,8 @@ public class CandyScene extends BaseGameEngine {
 		mMenuLayer.isVisible = false;
 		addChild(mMenuLayer);
 
-		if (mCurrentLevel == 0 && state == StageData.OPENING) {
+		// if (mCurrentLevel == 0 && state == StageData.OPENING) {
+		if (mCurrentLevel == 0) {
 			TeachLayer tl = new TeachLayer(this);
 			tl.initLayer();
 			addChild(tl);

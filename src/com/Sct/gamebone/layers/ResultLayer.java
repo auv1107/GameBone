@@ -2,6 +2,7 @@ package com.Sct.gamebone.layers;
 
 import com.Sct.gamebone.CandyScene;
 import com.Sct.gamebone.StageData;
+import com.Sct.gamebone.library.SoundCache;
 import com.Sct.gamebone.view.BaseLayer;
 import com.Sct.gamebone.view.Sprite;
 
@@ -88,6 +89,7 @@ public class ResultLayer extends BaseLayer {
 			@Override
 			public boolean doTouch(int x, int y) {
 				// TODO Auto-generated method stub
+				SoundCache.PlayAudio("click");
 				if (mBtnChoice.getDestBound().contains(x, y)) {
 					if (mState == StageData.PASSED)
 						mScene.nextStage();

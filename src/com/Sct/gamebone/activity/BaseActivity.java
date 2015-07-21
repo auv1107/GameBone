@@ -84,6 +84,6 @@ public class BaseActivity extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			dialog();
 		}
-		return false;
+		return true;
 	}
 }
